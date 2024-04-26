@@ -1,0 +1,28 @@
+---
+import pullWidgetById from "../lib/pull-widget-by-id";
+import dynamic from "astro:import";
+const data = [
+  "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
+  "rrw0b09CzCCnDZNFqsh8pajxaWy2Tkss",
+];
+
+const components: Array<AstroComponentFactory> = [];
+for (const id of data) {
+  const widgetPath = `widgets/${await pullWidgetById(id)}.astro`;
+  const Component = await dynamic(widgetPath);
+  components.push(Component);
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    {components.map((Component) => <Component />)}
+  </body>
+</html>
