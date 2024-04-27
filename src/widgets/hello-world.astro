@@ -1,26 +1,33 @@
 ---
+import type { TsrlWidget, WidgetGenerator } from '../lib/types';
+
 //! DO NOT CHANGE THIS ID
 export const tsrlID = "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe";
 
-export const tsrlWidget = {
+const tsrlWidget = {
   description: "This is a test widget",
   widgets: [
     {
-      name: "text-widget-1",
+      name: "title",
       type: "text",
-      title: "Text Widget",
-      content: "This is a text widget",
+      label: "Title",
+      defaultValue: "This is a title",
     },
     {
-      name: "text-widget-2",
+      name: "description",
       type: "text",
-      title: "Text Widget",
-      content: "This is a text widget",
+      label: "Description",
+      defaultValue: "This is a description",
     },
   ],
-};
+} satisfies TsrlWidget;
+
+type Props = WidgetGenerator<typeof tsrlWidget>
+
+const { title, description } = Astro.props;
 ---
 
 <div>
-  <h1>Hello, World</h1>
+  <h1>{title}, World</h1>
+  <p>{description}</p>
 </div>

@@ -1,29 +1,13 @@
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
-import type { TsrlWidget } from "./types";
-
-type Component<T extends TsrlWidget> = {
-  tsrlWidget: T | undefined;
-  tsrlID: string | undefined;
-  default: [Function: string];
-  file: string;
-  url: string | undefined;
-};
-
-type Widget<T extends TsrlWidget> = {
-  path: string;
-  name: string;
-  description: string | undefined;
-  isWidget: boolean;
-  widgetData: T | undefined;
-};
+import type { Component, TsrlWidget, WidgetComponent } from "./types";
 
 export default async function readWidgets<T extends TsrlWidget>(): Promise<
-  Array<Widget<T>>
+  Array<WidgetComponent<T>>
 > {
   const widgetPath = path.join(process.cwd(), "src/widgets");
-  const widgetSet: Array<Widget<T>> = [];
+  const widgetSet: Array<WidgetComponent<T>> = [];
   if (!existsSync(widgetPath)) {
     console.error("error: 'widgets' directory was not found");
     return widgetSet;
@@ -33,11 +17,10 @@ export default async function readWidgets<T extends TsrlWidget>(): Promise<
     .filter((file) => file.endsWith(".astro"))
     .map((file) => file.replace(".astro", ""));
 
-  for (let i = 0; i < widgets.length; i++) {
-    const widget = widgets[i];
+  for (const widget of widgets) {
     try {
       const data = (await import(`../widgets/${widget}.astro`)) as Component<T>;
-      let isWidget = data.tsrlWidget ? true : false;
+      let isWidget = !!data.tsrlWidget;
       if (data.tsrlID) {
         widgetSet.push({
           path: data.file,
