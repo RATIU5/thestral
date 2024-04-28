@@ -2,8 +2,13 @@ import dynamic from "astro:import";
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
-import type { TsrlSchema } from "../types";
+import type { Schema } from "../types";
 
+//! ===============================================================
+//! Make these functions more efficient, they are currently O(n^2)!
+//? Maybe add a checker at build time to compute checks every time
+//? a widget is added or removed or renamed or otherwise changed
+//! ===============================================================
 /**
  * Pulls the name (the folder name containing the schema.ts and template.astro files) of a widget by its id
  * @param id the id of the widget to pull the name of
@@ -28,7 +33,7 @@ async function pullWidgetNameById(id: string): Promise<string> {
     }
     try {
       const data = (await import(`../../widgets/${wName}/schema.ts`))
-        .default as TsrlSchema | undefined;
+        .default as Schema | undefined;
 
       if (!data) {
         console.warn(

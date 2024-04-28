@@ -1,4 +1,4 @@
-import type { TsrlSchema } from "@/lib/types";
+import type { Schema } from "@/lib/types";
 
 export default {
   id: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
@@ -17,4 +17,4 @@ export default {
       defaultValue: "This is a description",
     },
   ],
-} as const satisfies TsrlSchema;
+} as const satisfies Schema;
