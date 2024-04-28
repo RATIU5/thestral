@@ -1,39 +1,54 @@
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
-import type { Component, Schema, WidgetComponent } from "../types";
+import type { Schema, AdminWidget } from "../types";
 
-export default async function readWidgets<T extends Schema>(): Promise<
-  Array<WidgetComponent<T>>
-> {
+/**
+ * Pull all necessary information from the schema.ts files in the widgets directory
+ * to show each widget in the admin panel
+ * @returns an array of AdminWidget objects
+ */
+export async function readAdminWidgets(): Promise<Array<AdminWidget>> {
+  const widgetArray: Array<AdminWidget> = [];
   const widgetPath = path.join(process.cwd(), "src/widgets");
-  const widgetSet: Array<WidgetComponent<T>> = [];
   if (!existsSync(widgetPath)) {
     console.error("error: 'widgets' directory was not found");
-    return widgetSet;
+    return widgetArray;
   }
+  const widgetDirs = (await readdir(widgetPath, { withFileTypes: true }))
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
 
-  let widgets = (await readdir(widgetPath))
-    .filter((file) => file.endsWith(".astro"))
-    .map((file) => file.replace(".astro", ""));
-
-  for (const widget of widgets) {
-    try {
-      const data = (await import(`../widgets/${widget}.astro`)) as Component<T>;
-      let isWidget = !!data.tsrlWidget;
-      if (data.tsrlID) {
-        widgetSet.push({
-          path: data.file,
-          name: widget,
-          isWidget,
-          description: data.tsrlWidget?.description,
-          widgetData: data.tsrlWidget,
-        });
+  try {
+    for (const widget of widgetDirs) {
+      const widgetSchemaPath = path.join(widgetPath, widget, "schema.ts");
+      if (!existsSync(widgetSchemaPath)) {
+        console.warn(
+          `warning: widget schema not found at '${widgetSchemaPath}'; skipping`
+        );
+        continue;
       }
-    } catch (e) {
-      console.error(e);
+      const data = (await import(`../../widgets/${widget}/schema.ts`))
+        .default as Schema | undefined;
+      if (!data) {
+        console.warn(
+          `warning: widget schema at '${widgetSchemaPath}' does not have a default export; skipping`
+        );
+        continue;
+      }
+      if (!data.id) {
+        console.warn(
+          `warning: widget schema at '${widgetSchemaPath}' does not have an 'id' property; skipping`
+        );
+        continue;
+      }
+      widgetArray.push({
+        name: data.name ?? widget,
+        description: data.description,
+      });
     }
+  } catch (e) {
+    console.error(e);
   }
-
-  return widgetSet;
+  return widgetArray;
 }

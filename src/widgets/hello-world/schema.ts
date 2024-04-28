@@ -2,6 +2,7 @@ import type { Schema } from "@/lib/types";
 
 export default {
   id: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
+  name: "Hello World",
   description: "This is a test widget",
   widgets: [
     {

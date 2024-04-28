@@ -1,9 +1,9 @@
 ---
 export const prerender = false;
-import readWidgets from "@/lib/widgets-admin/read-widgets";
+import {readAdminWidgets} from "@/lib/widgets-admin/read-widgets";
 import { cn } from "@/lib/utils";
 
-const widgets = await readWidgets();
+const widgets = await readAdminWidgets();
 ---
 
 <div>

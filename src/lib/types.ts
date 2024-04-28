@@ -6,12 +6,9 @@ export type Component<T extends Schema> = {
   url: string | undefined;
 };
 
-export type WidgetComponent<T extends Schema> = {
-  path: string;
+export type AdminWidget = {
   name: string;
   description: string | undefined;
-  isWidget: boolean;
-  widgetData: T | undefined;
 };
 
 export type WidgetTypes =
@@ -80,7 +77,8 @@ export type Widget =
 
 export type Schema = {
   id: string | undefined;
-  description: string | undefined;
+  name?: string;
+  description?: string;
   widgets: Array<Widget>;
 };
 
