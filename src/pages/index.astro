@@ -1,22 +1,18 @@
 ---
-import { collectRenderWidgets } from "../lib/collect-render-widgets.ts";
+import { collectWidgets } from "@/lib/widgets-page/collect-widgets";
+
+// Array of wigets and their props taken from the database
 const data = [
   { 
     widgetId: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe", 
-    payload: {
+    props: {
       title: "Hello World",
       description: "This is a description",
     },
   },
-  {
-    widgetId: "rrw0b09CzCCnDZNFqsh8pajxaWy2Tkss", 
-    payload: {
-
-    }
-  },
 ];
 
-const components = await collectRenderWidgets(data);
+const components = await collectWidgets(data);
 ---
 
 <html lang="en">

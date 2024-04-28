@@ -1,4 +1,4 @@
-export type Component<T extends TsrlWidget> = {
+export type Component<T extends TsrlSchema> = {
   tsrlWidget: T | undefined;
   tsrlID: string | undefined;
   default: [Function: string];
@@ -6,7 +6,7 @@ export type Component<T extends TsrlWidget> = {
   url: string | undefined;
 };
 
-export type WidgetComponent<T extends TsrlWidget> = {
+export type WidgetComponent<T extends TsrlSchema> = {
   path: string;
   name: string;
   description: string | undefined;
@@ -78,8 +78,9 @@ export type Widget =
   | RadioWidget
   | SelectWidget;
 
-export type TsrlWidget = {
-  description: string;
+export type TsrlSchema = {
+  id: string | undefined;
+  description: string | undefined;
   widgets: Array<Widget>;
 };
 
@@ -91,7 +92,7 @@ type WidenLiteral<T> = T extends string
   ? boolean
   : unknown;
 
-export type WidgetGenerator<T extends TsrlWidget> = {
+export type SchemaProps<T extends TsrlSchema> = {
   [Name in T["widgets"][number]["name"]]: WidenLiteral<
     Extract<T["widgets"][number], { name: Name }>["defaultValue"]
   >;

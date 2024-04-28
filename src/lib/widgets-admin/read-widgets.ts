@@ -1,9 +1,9 @@
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
-import type { Component, TsrlWidget, WidgetComponent } from "./types";
+import type { Component, TsrlSchema, WidgetComponent } from "../types";
 
-export default async function readWidgets<T extends TsrlWidget>(): Promise<
+export default async function readWidgets<T extends TsrlSchema>(): Promise<
   Array<WidgetComponent<T>>
 > {
   const widgetPath = path.join(process.cwd(), "src/widgets");
