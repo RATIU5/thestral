@@ -17,4 +17,4 @@ export default {
       defaultValue: "This is a description",
     },
   ],
-} satisfies TsrlSchema;
+} as const satisfies TsrlSchema;

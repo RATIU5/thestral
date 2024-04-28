@@ -11,4 +11,4 @@ export default {
       defaultValue: "This is a title",
     },
   ],
-} satisfies TsrlSchema;
+} as const satisfies TsrlSchema;
