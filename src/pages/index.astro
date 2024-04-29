@@ -1,52 +1,11 @@
 ---
 import { collectWidgets } from "@/lib/widgets-page/collect-widgets";
+import "@/styles/globals.css";
 
 // Array of wigets and their props taken from the database
 const data = [
   {
-    widgetId: "3gik3Ef4uKoPKN22JUOwvQcYxLrBHM73",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-  {
-    widgetId: "xYjBpexokhQCddAFkUxRBVCZIObS5oFQ",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-  {
-    widgetId: "Vq6tztkB633o0dEHm2bWedLkn9SmqvGO",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-  {
-    widgetId: "OvMaRWN1BmwiGit7ekWbENjXoeTt4WZA",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-  {
-    widgetId: "jADlizGzlca6L7GODgPwaL8Z8OXmt5FR",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-  {
-    widgetId: "GvMacgMiNiaSo6VGODIb93aBlU9eg6il",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-  {
-    widgetId: "nLYl53wJr6ixAOSnIZSMEoKp8o79VzbG",
+    widgetId: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
     props: {
       title: "Hello World",
       description: "This is a description",
@@ -54,10 +13,7 @@ const data = [
   },
 ];
 
-const startTime = performance.now();
 const components = await collectWidgets(data);
-const endTime = performance.now();
-console.log(`Call to collectWidgets took ${endTime - startTime} milliseconds`);
 ---
 
 <html lang="en">

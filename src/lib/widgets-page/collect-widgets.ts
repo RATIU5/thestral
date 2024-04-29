@@ -15,7 +15,7 @@ export type CollectWidgetsProps = {
  * @returns array of objects containing the AstroComponentFactory component and the props
  */
 export async function collectWidgets(
-  data: Array<CollectWidgetsProps>,
+  data: Array<CollectWidgetsProps>
 ): Promise<
   Array<{ component: AstroComponentFactory; props: { [x: string]: any } }>
 > {
@@ -34,7 +34,7 @@ export async function collectWidgets(
       console.error(e);
     } else {
       console.error(
-        "error: failed to import widget map at 'src/widgets/map.json'; please run 'thes map' to generate it",
+        "error: failed to import widget map at 'src/widgets/map.json'; please run 'thes map' to generate it"
       );
     }
     return components;
@@ -56,7 +56,7 @@ export async function collectWidgets(
         console.error(e);
       } else {
         console.error(
-          `error: failed to import widget at '${widgetTemplatePath}'; skipping`,
+          `error: failed to import widget at '${widgetTemplatePath}'; skipping`
         );
       }
     }
