@@ -40,7 +40,7 @@ export default function (_?: Options): AstroIntegration {
                       `export const srcDirName = ${JSON.stringify(
                         srcDirName
                       )}\n` +
-                      `export const lookupMap = import.meta.glob('/${srcDirName}/widgets/**/template.astro', { query: { ${PROPAGATED_ASSET_FLAG}: true } })\n`
+                      `export const lookupMap = import.meta.glob('/${srcDirName}/widgets/*/template.astro', { query: { ${PROPAGATED_ASSET_FLAG}: true } })\n`
                     );
                   }
                 },

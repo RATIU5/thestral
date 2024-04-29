@@ -9,6 +9,7 @@ import type { Schema } from "../types";
 //? Maybe add a checker at build time to compute checks every time
 //? a widget is added or removed or renamed or otherwise changed
 //! ===============================================================
+
 /**
  * Pulls the name (the folder name containing the schema.ts and template.astro files) of a widget by its id
  * @param id the id of the widget to pull the name of
@@ -67,9 +68,10 @@ export type CollectWidgetsProps = {
 };
 
 /**
- * Collects widgets from the database and returns an array of AstroComponentFactory components
+ * Collects widgets from the database and returns an array of objects that contain
+ * the AstroComponentFactory component and the props to pass to it
  * @param data array of widget data from the database
- * @returns array of AstroComponentFactory components ready to be rendered
+ * @returns array of objects containing the AstroComponentFactory component and the props
  */
 export async function collectWidgets(
   data: Array<CollectWidgetsProps>

@@ -1,6 +1,6 @@
 ---
 export const prerender = false;
-import {readAdminWidgets} from "@/lib/widgets-admin/read-widgets";
+import { readAdminWidgets } from "@/lib/widgets-admin/read-widgets";
 import { cn } from "@/lib/utils";
 
 const widgets = await readAdminWidgets();
@@ -8,7 +8,7 @@ const widgets = await readAdminWidgets();
 
 <div>
   <h1>Widgets</h1>
-  <div class="max-w-xs">
+  <div class="max-w-xs flex flex-col gap-2 p-2">
     {
       widgets.map((w) => (
         <div
