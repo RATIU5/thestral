@@ -1,4 +1,4 @@
-import type { Schema } from "../../lib/types";
+import type { Schema } from "@/lib/types";
 
 export default {
   id: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
