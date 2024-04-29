@@ -1,0 +1,11 @@
+---
+import type { SchemaProps } from '../../lib/types';
+import type schema from './schema';
+
+type Props = SchemaProps<typeof schema>
+const { linkName, linkUrl } = Astro.props;
+---
+
+<div>
+  <a href={linkUrl}>{linkName}</a>
+</div>

@@ -1,3 +1,16 @@
+export type Component<T extends Schema> = {
+  tsrlWidget: T | undefined;
+  tsrlID: string | undefined;
+  default: [Function: string];
+  file: string;
+  url: string | undefined;
+};
+
+export type AdminWidget = {
+  name: string;
+  description: string | undefined;
+};
+
 export type WidgetTypes =
   | "text"
   | "textarea"
@@ -8,19 +21,20 @@ export type WidgetTypes =
   | "select";
 
 interface BaseWidget {
+  name: string;
   label: string;
 }
 
 export interface TextWidget extends BaseWidget {
   type: "text";
   defaultValue: string;
-  placeholder: string;
+  placeholder?: string;
 }
 
 export interface TextareaWidget extends BaseWidget {
   type: "textarea";
   defaultValue: string;
-  placeholder: string;
+  placeholder?: string;
 }
 
 export interface DateWidget extends BaseWidget {
@@ -61,8 +75,23 @@ export type Widget =
   | RadioWidget
   | SelectWidget;
 
-export type TsrlWidget = {
-  description: string;
-  url: string;
+export type Schema = {
+  id: string | undefined;
+  name?: string;
+  description?: string;
   widgets: Array<Widget>;
+};
+
+type WidenLiteral<T> = T extends string
+  ? string
+  : T extends number
+  ? number
+  : T extends boolean
+  ? boolean
+  : unknown;
+
+export type SchemaProps<T extends Schema> = {
+  [Name in T["widgets"][number]["name"]]: WidenLiteral<
+    Extract<T["widgets"][number], { name: Name }>["defaultValue"]
+  >;
 };

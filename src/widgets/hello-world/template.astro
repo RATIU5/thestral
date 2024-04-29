@@ -1,0 +1,11 @@
+---
+import type { SchemaProps } from '../../lib/types';
+import type schema from './schema';
+
+type Props = SchemaProps<typeof schema>
+const { greeting } = Astro.props;
+---
+
+<div>
+  <h1>{greeting}</h1>
+</div>
