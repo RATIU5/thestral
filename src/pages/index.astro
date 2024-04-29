@@ -1,17 +1,17 @@
 ---
-import pullWidgetById from "../lib/pull-widget-by-id";
-import dynamic from "astro:import";
+import {collectWidgets} from "@/lib/frontface/collect-widgets";
+
+// Array of wigets and their props taken from the database
 const data = [
-  "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
-  "rrw0b09CzCCnDZNFqsh8pajxaWy2Tkss",
+  { 
+    widgetId: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe", 
+    props: {
+      greeting: "Welcome",
+    },
+  },
 ];
 
-const components: Array<AstroComponentFactory> = [];
-for (const id of data) {
-  const widgetPath = `widgets/${await pullWidgetById(id)}.astro`;
-  const Component = await dynamic(widgetPath);
-  components.push(Component);
-}
+const widgets = await collectWidgets(data);
 ---
 
 <html lang="en">
@@ -23,6 +23,6 @@ for (const id of data) {
     <title>Astro</title>
   </head>
   <body>
-    {components.map((Component) => <Component />)}
+    {widgets.map((w) => <w.component {...w.props} />)}
   </body>
 </html>
