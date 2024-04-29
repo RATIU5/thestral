@@ -38,13 +38,13 @@ async function pullWidgetNameById(id: string): Promise<string> {
 
       if (!data) {
         console.warn(
-          `warning: widget schema at '${wPath}' does not have a default export; skipping`
+          `warning: widget schema at '${wPath}' does not have a default export; skipping`,
         );
         continue;
       }
       if (!data.id) {
         console.warn(
-          `warning: widget schema at '${wPath}' does not have an 'id' property; skipping`
+          `warning: widget schema at '${wPath}' does not have an 'id' property; skipping`,
         );
         continue;
       }
@@ -74,7 +74,7 @@ export type CollectWidgetsProps = {
  * @returns array of objects containing the AstroComponentFactory component and the props
  */
 export async function collectWidgets(
-  data: Array<CollectWidgetsProps>
+  data: Array<CollectWidgetsProps>,
 ): Promise<
   Array<{ component: AstroComponentFactory; props: { [x: string]: any } }>
 > {
@@ -86,7 +86,7 @@ export async function collectWidgets(
     const widgetName = await pullWidgetNameById(w.widgetId);
     if (widgetName === "<undefined>") {
       console.warn(
-        `warning: widget with id '${w.widgetId}' not found; skipping`
+        `warning: widget with id '${w.widgetId}' not found; skipping`,
       );
       continue;
     }

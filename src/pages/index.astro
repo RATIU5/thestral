@@ -3,8 +3,8 @@ import { collectWidgets } from "@/lib/widgets-page/collect-widgets";
 
 // Array of wigets and their props taken from the database
 const data = [
-  { 
-    widgetId: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe", 
+  {
+    widgetId: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
     props: {
       title: "Hello World",
       description: "This is a description",
@@ -24,6 +24,6 @@ const components = await collectWidgets(data);
     <title>Astro</title>
   </head>
   <body>
-    {components.map((w) => <w.component {...(w.props)} />)}
+    {components.map((w) => <w.component {...w.props} />)}
   </body>
 </html>
