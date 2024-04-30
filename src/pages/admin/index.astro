@@ -17,47 +17,323 @@ export const prerender = false;
   </Fragment>
   <header>
     <div class="w-full flex border-b border-slate-200">
-      <div class="max-w-xs w-full py-4 border-r border-slate-200">
-        <p class="font-space text-xl text-center text-slate-800">Thestral</p>
+      <div class="max-w-xs min-w-[20rem] w-full py-4 border-r border-slate-200">
+        <p class="font-space text-xl text-center text-slate-800">
+          <span class="bg-slate-800 text-white px-1">Thes</span>tral
+        </p>
       </div>
-      <div class="grow"></div>
+      <div role="tablist" class="grow flex justify-center items-center">
+        <div
+          id="tabsList"
+          aria-label="Tabs"
+          aria-orientation="horizontal"
+          tab-index="0"
+          class="inline-flex h-11 items-center justify-center rounded-xl bg-slate-100 p-1 text-slate-500"
+        >
+          <button
+            id="tabButton-design"
+            aria-hidden="false"
+            aria-selected="true"
+            tabindex="0"
+            data-state="active"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-gradient-to-b data-[state=active]:from-white data-[state=active]:to-slate-50 data-[state=active]:text-slate-950 data-[state=active]:shadow-sm data-[state=active]:border-slate-200"
+            >Design</button
+          >
+          <button
+            id="tabButton-settings"
+            aria-hidden="true"
+            aria-selected="false"
+            tabindex="-1"
+            data-state="inactive"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-gradient-to-b data-[state=active]:from-white data-[state=active]:to-slate-50 data-[state=active]:text-slate-950 data-[state=active]:shadow-sm data-[state=active]:border-slate-200"
+            >Settings</button
+          >
+        </div>
+      </div>
     </div>
   </header>
-  <main class="h-full bg-slate-100">
-    <aside class="h-full bg-white max-w-xs">
-      <div
-        class="max-w-xs flex flex-col gap-2 p-2 border-r border-slate-200 h-full"
-      >
-        {
-          widgets.map((w) => (
+  <main class="h-full bg-slate-100 flex">
+    <div
+      id="tabContent-design"
+      class="w-full ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-slate-950"
+      tabindex="0"
+      role="tabpanel"
+      aria-orientation="horizontal"
+      data-state="active"
+    >
+      <div class="flex h-full">
+        <aside class="h-full bg-white max-w-xs min-w-[20rem]">
+          <div
+            id="widgetContainer"
+            class="max-w-xs flex flex-col gap-2 p-2 border-r border-slate-200 h-full"
+          >
+            {
+              widgets.map((w, i) => (
+                <div
+                  id={`widget-${w.id}`}
+                  tab-index={0}
+                  class="flex justify-between items-center cursor-grab text-slate-700 select-none shadow-sm border border-solid px-4 py-2 border-slate-200 rounded-xl active:shadow-md active:scale-[101%] active:shadow-slate-300/75 hover:shadow-md hover:scale-[101%] transition-all shadow-slate-200 hover:shadow-slate-300/75 active:z-50 outline-2 outline-slate-600 bg-gradient-to-b from-white to-slate-50 duration-200 ease-in-out"
+                >
+                  <div class="flex flex-col justify-center items-start">
+                    <p class="capitalize text-sm font-semibold">{w.name}</p>
+                    {w.description && <p class="text-sm">{w.description}</p>}
+                  </div>
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 15 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      class="text-slate-700"
+                      d="M5.5 4.625C6.12132 4.625 6.625 4.12132 6.625 3.5C6.625 2.87868 6.12132 2.375 5.5 2.375C4.87868 2.375 4.375 2.87868 4.375 3.5C4.375 4.12132 4.87868 4.625 5.5 4.625ZM9.5 4.625C10.1213 4.625 10.625 4.12132 10.625 3.5C10.625 2.87868 10.1213 2.375 9.5 2.375C8.87868 2.375 8.375 2.87868 8.375 3.5C8.375 4.12132 8.87868 4.625 9.5 4.625ZM10.625 7.5C10.625 8.12132 10.1213 8.625 9.5 8.625C8.87868 8.625 8.375 8.12132 8.375 7.5C8.375 6.87868 8.87868 6.375 9.5 6.375C10.1213 6.375 10.625 6.87868 10.625 7.5ZM5.5 8.625C6.12132 8.625 6.625 8.12132 6.625 7.5C6.625 6.87868 6.12132 6.375 5.5 6.375C4.87868 6.375 4.375 6.87868 4.375 7.5C4.375 8.12132 4.87868 8.625 5.5 8.625ZM10.625 11.5C10.625 12.1213 10.1213 12.625 9.5 12.625C8.87868 12.625 8.375 12.1213 8.375 11.5C8.375 10.8787 8.87868 10.375 9.5 10.375C10.1213 10.375 10.625 10.8787 10.625 11.5ZM5.5 12.625C6.12132 12.625 6.625 12.1213 6.625 11.5C6.625 10.8787 6.12132 10.375 5.5 10.375C4.87868 10.375 4.375 10.8787 4.375 11.5C4.375 12.1213 4.87868 12.625 5.5 12.625Z"
+                      fill="currentColor"
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              ))
+            }
+          </div>
+        </aside>
+        <div class="h-full w-full px-4">
+          <div
+            id="dropover-design"
+            tabindex="0"
+            aria-label="Drop area"
+            data-state="inactive"
+            class="group my-4 p-4 h-[calc(100%-2rem)] rounded-lg bg-white mx-auto overflow-y-auto data-[state=soonover]:border-2 data-[state=soonover]:border-green-500 data-[state=soonover]:bg-green-50 data-[state=isover]:border-2 data-[state=isover]:border-green-500 data-[state=isover]:bg-green-50"
+          >
             <div
-              tab-index={0}
-              class="flex justify-between items-center cursor-grab text-slate-700 select-none shadow-sm border border-solid px-4 py-2 border-slate-200 rounded-xl active:shadow-md active:scale-[101%] active:shadow-slate-300/75 hover:shadow-md hover:scale-[101%] transition-all shadow-slate-200 hover:shadow-slate-300/75 active:rotate-6 active:z-50 outline-2 outline-slate-600 bg-gradient-to-b from-white to-slate-50 duration-200 ease-in-out"
+              id="message-noWidgets"
+              class="flex group-data-[state=isover]:hidden w-full h-full justify-center items-center"
             >
-              <div class="flex flex-col justify-center items-start">
-                <p class="capitalize text-sm font-semibold">{w.name}</p>
-                {w.description && <p class="text-sm">{w.description}</p>}
-              </div>
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <p
+                class="text-slate-300 text-2xl group-data-[state=soonover]:text-green-600/50"
               >
-                <path
-                  class="text-slate-700"
-                  d="M5.5 4.625C6.12132 4.625 6.625 4.12132 6.625 3.5C6.625 2.87868 6.12132 2.375 5.5 2.375C4.87868 2.375 4.375 2.87868 4.375 3.5C4.375 4.12132 4.87868 4.625 5.5 4.625ZM9.5 4.625C10.1213 4.625 10.625 4.12132 10.625 3.5C10.625 2.87868 10.1213 2.375 9.5 2.375C8.87868 2.375 8.375 2.87868 8.375 3.5C8.375 4.12132 8.87868 4.625 9.5 4.625ZM10.625 7.5C10.625 8.12132 10.1213 8.625 9.5 8.625C8.87868 8.625 8.375 8.12132 8.375 7.5C8.375 6.87868 8.87868 6.375 9.5 6.375C10.1213 6.375 10.625 6.87868 10.625 7.5ZM5.5 8.625C6.12132 8.625 6.625 8.12132 6.625 7.5C6.625 6.87868 6.12132 6.375 5.5 6.375C4.87868 6.375 4.375 6.87868 4.375 7.5C4.375 8.12132 4.87868 8.625 5.5 8.625ZM10.625 11.5C10.625 12.1213 10.1213 12.625 9.5 12.625C8.87868 12.625 8.375 12.1213 8.375 11.5C8.375 10.8787 8.87868 10.375 9.5 10.375C10.1213 10.375 10.625 10.8787 10.625 11.5ZM5.5 12.625C6.12132 12.625 6.625 12.1213 6.625 11.5C6.625 10.8787 6.12132 10.375 5.5 10.375C4.87868 10.375 4.375 10.8787 4.375 11.5C4.375 12.1213 4.87868 12.625 5.5 12.625Z"
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                />
-              </svg>
+                Drag & drop a widget from the left to get started
+              </p>
             </div>
-          ))
-        }
+            <div
+              id="message-dropHere"
+              class="hidden group-data-[state=isover]:flex flex-col w-full h-full justify-center items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="animate-bounce w-20 h-20 text-2xl text-green-600/50"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+                  d="M15 12h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-6h6v6z"
+                ></path><path d="M15 3h-6"></path></svg
+              >
+              <p class="text-2xl text-green-600/50">Drop the widget here</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </aside>
-    <div></div>
+    </div>
+    <div
+      id="tabContent-settings"
+      class="hidden w-full ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-slate-950"
+      tabindex="0"
+      role="tabpanel"
+      aria-orientation="horizontal"
+      data-state="inactive"
+    >
+      <div class="flex h-full">
+        <aside class="h-full bg-white max-w-xs min-w-[20rem]">
+          <div
+            class="max-w-xs flex flex-col gap-2 p-2 border-r border-slate-200 h-full"
+          >
+            <nav>
+              <ul class="flex flex-col gap-2">
+                <li class="w-full">
+                  <button
+                    data-state="active"
+                    tabindex="-1"
+                    class="w-full block relative py-3 px-4 text-left rounded-lg text-sm font-medium text-slate-800 ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=inactive]:hover:bg-slate-100 data-[state=active]:cursor-default data-[state=active]:after:absolute data-[state=active]:after:right-2 data-[state=active]:after:top-[22%] data-[state=active]:after:w-1 data-[state=active]:after:h-[calc(100%-1rem)] data-[state=active]:after:bg-slate-600 data-[state=active]:after:rounded-sm"
+                    >Page Settings</button
+                  >
+                </li>
+                <li>
+                  <button
+                    data-state="inactive"
+                    class="w-full block relative py-3 px-4 text-left rounded-lg text-sm font-medium text-slate-800 ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=inactive]:hover:bg-slate-100 data-[state=active]:cursor-default data-[state=active]:after:absolute data-[state=active]:after:right-2 data-[state=active]:after:top-[22%] data-[state=active]:after:w-1 data-[state=active]:after:h-[calc(100%-1rem)] data-[state=active]:after:bg-slate-600 data-[state=active]:after:rounded-sm"
+                    >SEO Settings</button
+                  >
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </aside>
+        <div class="h-full w-full px-4">
+          <div
+            class="my-4 p-4 h-[calc(100%-2rem)] max-w-md rounded-lg bg-white mx-auto overflow-y-auto flex flex-col"
+          >
+            <div class="flex justify-end w-full">
+              <button
+                class="inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-50 border-slate-300 hover:bg-slate-100"
+                >Save</button
+              >
+            </div>
+            <section>
+              <h3>Page Settings</h3>
+            </section>
+            <section>
+              <h3>SEO Settings</h3>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </Base>
+
+<script>
+  // TODO: Add JS on settings panel to scroll to on button category click
+  // ==========================================================================
+  //                               Tab Navigation
+  // ==========================================================================
+  const designTabButton = document.getElementById("tabButton-design")!;
+  const settingsTabButton = document.getElementById("tabButton-settings")!;
+  const designTabContent = document.getElementById("tabContent-design")!;
+  const settingsTabContent = document.getElementById("tabContent-settings")!;
+
+  function toggleTabContent(designIsActive = true) {
+    designTabContent.classList.toggle("hidden", !designIsActive);
+    settingsTabContent.classList.toggle("hidden", designIsActive);
+  }
+
+  function toggleTabButtons(designIsActive = true) {
+    designTabButton.dataset.state = designIsActive ? "active" : "inactive";
+    designTabButton.ariaHidden = designIsActive ? "false" : "true";
+    designTabButton.tabIndex = designIsActive ? 0 : -1;
+    designTabButton.ariaSelected = designIsActive ? "true" : "false";
+    settingsTabButton.dataset.state = designIsActive ? "" : "active";
+    settingsTabButton.ariaHidden = designIsActive ? "true" : "false";
+    settingsTabButton.tabIndex = designIsActive ? -1 : 0;
+    settingsTabButton.ariaSelected = designIsActive ? "false" : "true";
+    if (designIsActive) {
+      designTabButton.focus();
+      toggleTabContent(true);
+    } else {
+      settingsTabButton.focus();
+      toggleTabContent(false);
+    }
+  }
+
+  designTabButton.addEventListener("click", () => toggleTabButtons(true));
+  settingsTabButton.addEventListener("click", () => toggleTabButtons(false));
+  designTabButton.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+      toggleTabButtons(true);
+    } else if (e.key === "ArrowRight") {
+      toggleTabButtons(false);
+    }
+  });
+  2;
+  settingsTabButton.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+      toggleTabButtons(true);
+    } else if (e.key === "ArrowRight") {
+      toggleTabButtons(false);
+    }
+  });
+  // ==========================================================================
+  //                               Drag & Drop
+  // ==========================================================================
+  const dropArea = document.getElementById("dropover-design")!;
+
+  let isDragging = false;
+  let ghostElement: HTMLDivElement | null = null;
+  let startX = 0;
+  let startY = 0;
+  let ghostRect: DOMRect | null = null;
+
+  document.addEventListener("mousedown", startDragging);
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", stopDragging);
+
+  function startDragging(event: MouseEvent) {
+    isDragging = true;
+    startX = event.clientX;
+    startY = event.clientY;
+
+    const closest = (event.target as HTMLDivElement).closest("[id^=widget-]");
+
+    if (closest) {
+      ghostElement = closest.cloneNode(true) as HTMLDivElement;
+      ghostElement.classList.add(
+        "opacity-80",
+        "absolute",
+        "z-50",
+        "duration-0",
+        "rotate-3",
+        "w-[20rem]"
+      );
+      ghostRect = (event.target as HTMLDivElement).getBoundingClientRect();
+      ghostElement.style.left = `${startX - (ghostRect?.width ?? 0) / 2}px`;
+      ghostElement.style.top = `${startY - (ghostRect?.height ?? 0) / 2}px`;
+      document.body.appendChild(ghostElement);
+
+      dropArea.dataset.state = "soonover";
+    }
+  }
+
+  function drag(event: MouseEvent) {
+    if (isDragging && ghostElement) {
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+      ghostElement.style.left = `${mouseX - (ghostRect?.width ?? 0) / 2}px`;
+      ghostElement.style.top = `${mouseY - (ghostRect?.height ?? 0) / 2}px`;
+
+      // Update the drop area state based on if the mouse is over the drop area
+      if (
+        mouseX > dropArea.offsetLeft &&
+        mouseX < dropArea.offsetLeft + dropArea.offsetWidth &&
+        mouseY > dropArea.offsetTop &&
+        mouseY < dropArea.offsetTop + dropArea.offsetHeight
+      ) {
+        dropArea.dataset.state = "isover";
+      } else {
+        dropArea.dataset.state = "soonover";
+      }
+    }
+  }
+
+  // Fetch from the API to get the widget HTML via a Astro partial in a dynamic api route
+  async function stopDragging() {
+    if (isDragging) {
+      isDragging = false;
+
+      // Remove the ghost element
+      if (ghostElement) {
+        if (dropArea.dataset.state === "isover") {
+          // Widget should have an id in this format: widget-<id>
+          dropArea.dataset.state = "loading";
+          const componentId = ghostElement.id.split("-")[1];
+          const res = fetch(`/api/widget/${componentId}`, {
+            method: "GET",
+            headers: {
+              // TODO: add auth token
+              "Content-Type": "text/html",
+            },
+          });
+        }
+        document.body.removeChild(ghostElement);
+        ghostElement = null;
+      }
+
+      dropArea.dataset.state = "inactive";
+    }
+  }
+</script>

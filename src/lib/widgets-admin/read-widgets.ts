@@ -45,6 +45,7 @@ export async function readAdminWidgets(): Promise<Array<AdminWidget>> {
       widgetArray.push({
         name: data.name ?? widget,
         description: data.description,
+        id: data.id,
       });
     }
   } catch (e) {

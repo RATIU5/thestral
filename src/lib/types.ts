@@ -7,6 +7,7 @@ export type Component<T extends Schema> = {
 };
 
 export type AdminWidget = {
+  id: string;
   name: string;
   description: string | undefined;
 };

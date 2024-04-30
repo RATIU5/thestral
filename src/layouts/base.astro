@@ -15,7 +15,7 @@ const { title } = Astro.props;
     <title>{title ?? "undefined"}</title>
     <slot name="head" />
   </head>
-  <body class="h-screen">
+  <body class="h-screen flex flex-col">
     <slot />
   </body>
 </html>
