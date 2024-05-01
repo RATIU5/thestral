@@ -104,39 +104,12 @@ export const prerender = false;
             tabindex="0"
             aria-label="Drop area"
             data-state="inactive"
-            class="group my-4 h-[calc(100%-2rem)] rounded-lg bg-white mx-auto overflow-y-auto data-[state=soonover]:border-2 data-[state=soonover]:border-green-500 data-[state=soonover]:bg-green-50 data-[state=isover]:border-2 data-[state=isover]:border-green-500 data-[state=isover]:bg-green-50"
+            class="group my-4 h-[calc(100%-2rem)] rounded-lg bg-white mx-auto data-[state=soonover]:border-2 data-[state=soonover]:border-green-500 data-[state=soonover]:bg-green-50 data-[state=isover]:border-2 data-[state=isover]:border-green-500 data-[state=isover]:bg-green-50"
           >
-            <div
-              id="message-noWidgets"
-              class="flex group-data-[state=isover]:hidden w-full h-full justify-center items-center"
-            >
-              <p
-                class="text-slate-300 text-2xl group-data-[state=soonover]:text-green-600/50"
-              >
-                Drag & drop a widget from the left to get started
-              </p>
-            </div>
-            <div
-              id="message-dropHere"
-              class="hidden group-data-[state=isover]:flex flex-col w-full h-full justify-center items-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="animate-bounce w-20 h-20 text-2xl text-green-600/50"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-                  d="M15 12h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-6h6v6z"
-                ></path><path d="M15 3h-6"></path></svg
-              >
-              <p class="text-2xl text-green-600/50">Drop the widget here</p>
-            </div>
+            <iframe
+              class="select-none w-full h-full"
+              name="pageView"
+              referrerpolicy="no-referrer"></iframe>
           </div>
         </div>
       </div>
@@ -322,11 +295,12 @@ export const prerender = false;
           // Widget should have an id in this format: widget-<id>
           dropArea.dataset.state = "loading";
           const componentId = ghostElement.id.split("-")[1];
-          const res = await fetch(`/api/widget/${componentId}`, {
-            method: "GET",
+          const res = await fetch(`/pagebuilder`, {
+            method: "POST",
             headers: {
               // TODO: add auth token
               "Content-Type": "text/html",
+              body: 
             },
           });
           const html = await res.text();
