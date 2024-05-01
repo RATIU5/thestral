@@ -6,16 +6,21 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [dynamicImport(), tailwind({
-    applyBaseStyles: false,
-  }), react()],
+  output: "server",
+  integrations: [
+    dynamicImport(),
+    tailwind({
+      applyBaseStyles: false,
+    }),
+    react(),
+  ],
   // This is a workaround for a bug in dynamic-import
   vite: {
     define: {
-      __VERBOSE__: process.argv.includes("--verbose")
+      __VERBOSE__: process.argv.includes("--verbose"),
     },
     optimizeDeps: {
-      exclude: ["astro-dynamic-import:internal"]
-    }
-  }
+      exclude: ["astro-dynamic-import:internal"],
+    },
+  },
 });

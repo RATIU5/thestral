@@ -7,9 +7,9 @@ export default {
   widgets: [
     {
       name: "title",
-      type: "number",
+      type: "text",
       label: "Title",
-      defaultValue: 2,
+      defaultValue: "Hello, World!",
     },
     {
       name: "description",

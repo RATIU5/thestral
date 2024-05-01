@@ -1,0 +1,55 @@
+---
+import type { Schema } from "@/lib/types";
+import { transformSchemaToDefaultProps } from "@/lib/utils";
+import dynamic from "astro:import";
+import fs from "fs";
+
+const { id } = Astro.params;
+
+if (!id) {
+  return new Response("Bad request", { status: 400 });
+}
+
+let map = null;
+try {
+  map = (await import("../../../widgets/map.json")).default as Record<
+    string,
+    string
+  >;
+} catch (e) {
+  // @ts-ignore
+  if (__VERBOSE__) {
+    console.error(e);
+  } else {
+    console.error("Failed to load `map.json`; have you ran 'thes map'?");
+  }
+  return new Response("Internal server error", { status: 500 });
+}
+
+if (!map[id]) {
+  return new Response("Not found", { status: 404 });
+}
+
+const widgetTemplatePath = `/widgets/${map[id]}/template.astro`;
+if (fs.existsSync(widgetTemplatePath)) {
+  return new Response("Not found", { status: 404 });
+}
+
+// TODO: Fetch props from the database, if no data for a field, return the default value
+
+const widgetSchemaPath = `/widgets/${map[id]}/schema.ts`;
+if (fs.existsSync(widgetSchemaPath)) {
+  return new Response("Not found", { status: 404 });
+}
+
+const schemaData = (await import(`../../../widgets/${map[id]}/schema.ts`))
+  .default as Schema;
+
+const props = transformSchemaToDefaultProps(schemaData);
+
+const Component = await dynamic(widgetTemplatePath);
+
+export const partial = true;
+---
+
+<Component {...props} />

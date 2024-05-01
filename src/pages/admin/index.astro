@@ -104,7 +104,7 @@ export const prerender = false;
             tabindex="0"
             aria-label="Drop area"
             data-state="inactive"
-            class="group my-4 p-4 h-[calc(100%-2rem)] rounded-lg bg-white mx-auto overflow-y-auto data-[state=soonover]:border-2 data-[state=soonover]:border-green-500 data-[state=soonover]:bg-green-50 data-[state=isover]:border-2 data-[state=isover]:border-green-500 data-[state=isover]:bg-green-50"
+            class="group my-4 h-[calc(100%-2rem)] rounded-lg bg-white mx-auto overflow-y-auto data-[state=soonover]:border-2 data-[state=soonover]:border-green-500 data-[state=soonover]:bg-green-50 data-[state=isover]:border-2 data-[state=isover]:border-green-500 data-[state=isover]:bg-green-50"
           >
             <div
               id="message-noWidgets"
@@ -280,6 +280,7 @@ export const prerender = false;
         "rotate-3",
         "w-[20rem]"
       );
+      ghostElement.classList.remove("duration-200");
       ghostRect = (event.target as HTMLDivElement).getBoundingClientRect();
       ghostElement.style.left = `${startX - (ghostRect?.width ?? 0) / 2}px`;
       ghostElement.style.top = `${startY - (ghostRect?.height ?? 0) / 2}px`;
@@ -321,13 +322,19 @@ export const prerender = false;
           // Widget should have an id in this format: widget-<id>
           dropArea.dataset.state = "loading";
           const componentId = ghostElement.id.split("-")[1];
-          const res = fetch(`/api/widget/${componentId}`, {
+          const res = await fetch(`/api/widget/${componentId}`, {
             method: "GET",
             headers: {
               // TODO: add auth token
               "Content-Type": "text/html",
             },
           });
+          const html = await res.text();
+          // change this to a better way
+          let new_element = document
+            .createRange()
+            .createContextualFragment(html);
+          dropArea.prepend(new_element);
         }
         document.body.removeChild(ghostElement);
         ghostElement = null;
