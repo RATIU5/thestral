@@ -7,7 +7,7 @@
 
 ## Install Database
 
-Install MongoDB as described in the [official documentation](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/#run-mongodb-community-edition).
+Install MongoDB as described in the [official documentation](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/#installing-mongodb-7.0-edition-edition).
 
 Update your `.env` file with the following for development:
 
@@ -16,6 +16,7 @@ MONGODB_URI=mongodb://<username>:<password>@localhost:27017/myDatabase
 ```
 
 ```bash
+mongosh
 show dbs # Show all databases
 use <database> # Switch to a database
 

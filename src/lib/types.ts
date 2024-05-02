@@ -1,15 +1,11 @@
-export type Component<T extends Schema> = {
-  tsrlWidget: T | undefined;
-  tsrlID: string | undefined;
-  default: [Function: string];
-  file: string;
-  url: string | undefined;
-};
-
 export type AdminWidget = {
   id: string;
   name: string;
   description: string | undefined;
+};
+
+export type LocalizedText = {
+  [language: string]: string;
 };
 
 export type WidgetTypes =
@@ -19,22 +15,24 @@ export type WidgetTypes =
   | "number"
   | "checkbox"
   | "radio"
-  | "select";
+  | "select"
+  | "array";
 
 interface BaseWidget {
+  type: WidgetTypes;
   name: string;
   label: string;
 }
 
 export interface TextWidget extends BaseWidget {
   type: "text";
-  defaultValue: string;
+  defaultValue: LocalizedText;
   placeholder?: string;
 }
 
 export interface TextareaWidget extends BaseWidget {
   type: "textarea";
-  defaultValue: string;
+  defaultValue: LocalizedText;
   placeholder?: string;
 }
 
@@ -61,10 +59,22 @@ export interface RadioWidget extends BaseWidget {
   options: Array<{ label: string; value: RadioValue }>;
 }
 
+export type SelectValue = string;
+
 export interface SelectWidget extends BaseWidget {
   type: "select";
-  defaultValue: string;
-  options: Array<{ label: string; value: string }>;
+  defaultValue: SelectValue;
+  options: Array<{ label: string; value: SelectValue }>;
+}
+
+export interface ArrayWidget extends BaseWidget {
+  type: "array";
+  options: Array<Exclude<Widget, ArrayWidget>>;
+  defaultValues: Array<{
+    [K in keyof Exclude<Widget, ArrayWidget>]: K extends "defaultValues"
+      ? LocalizedText
+      : Exclude<Widget, ArrayWidget>[K];
+  }>;
 }
 
 export type Widget =
@@ -74,7 +84,8 @@ export type Widget =
   | NumberWidget
   | CheckboxWidget
   | RadioWidget
-  | SelectWidget;
+  | SelectWidget
+  | ArrayWidget;
 
 export type Schema = {
   id: string | undefined;

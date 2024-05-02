@@ -9,13 +9,17 @@ export default {
       name: "title",
       type: "text",
       label: "Title",
-      defaultValue: "Hello, World!",
+      defaultValue: {
+        en: "Hello, World!",
+      },
     },
     {
       name: "description",
       type: "text",
       label: "Description",
-      defaultValue: "This is a description",
+      defaultValue: {
+        en: "This is a test widget",
+      },
     },
   ],
 } as const satisfies Schema;

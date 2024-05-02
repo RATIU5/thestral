@@ -27,3 +27,14 @@ export async function getDB() {
   const mongo = await connectToDB();
   return mongo;
 }
+
+export async function seedDB(withTestData = false) {
+  const db = (await getDB())?.db("thestral");
+  if (!db) {
+    throw new Error("Database not found");
+  }
+
+  const users = await db.createCollection("users");
+  const templates = await db.createCollection("templates");
+  const pages = await db.createCollection("pages");
+}
