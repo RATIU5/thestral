@@ -4,11 +4,7 @@ export type AdminWidget = {
   description: string | undefined;
 };
 
-export type LocalizedText = {
-  [language: string]: string;
-};
-
-export type WidgetTypes =
+type WidgetTypes =
   | "text"
   | "textarea"
   | "date"
@@ -24,60 +20,55 @@ interface BaseWidget {
   label: string;
 }
 
-export interface TextWidget extends BaseWidget {
+interface TextWidget extends BaseWidget {
   type: "text";
-  defaultValue: LocalizedText;
+  defaultValue: string;
   placeholder?: string;
 }
 
-export interface TextareaWidget extends BaseWidget {
+interface TextareaWidget extends BaseWidget {
   type: "textarea";
-  defaultValue: LocalizedText;
+  defaultValue: string;
   placeholder?: string;
 }
 
-export interface DateWidget extends BaseWidget {
+interface DateWidget extends BaseWidget {
   type: "date";
   defaultValue: string;
 }
 
-export interface NumberWidget extends BaseWidget {
+interface NumberWidget extends BaseWidget {
   type: "number";
   defaultValue: number;
 }
 
-export interface CheckboxWidget extends BaseWidget {
+interface CheckboxWidget extends BaseWidget {
   type: "checkbox";
   defaultValue: boolean;
 }
 
-export type RadioValue = string;
+type RadioValue = string;
 
-export interface RadioWidget extends BaseWidget {
+interface RadioWidget extends BaseWidget {
   type: "radio";
   defaultValue: RadioValue;
   options: Array<{ label: string; value: RadioValue }>;
 }
 
-export type SelectValue = string;
+type SelectValue = string;
 
-export interface SelectWidget extends BaseWidget {
+interface SelectWidget extends BaseWidget {
   type: "select";
   defaultValue: SelectValue;
   options: Array<{ label: string; value: SelectValue }>;
 }
 
-export interface ArrayWidget extends BaseWidget {
+interface ArrayWidget extends BaseWidget {
   type: "array";
   options: Array<Exclude<Widget, ArrayWidget>>;
-  defaultValues: Array<{
-    [K in keyof Exclude<Widget, ArrayWidget>]: K extends "defaultValues"
-      ? LocalizedText
-      : Exclude<Widget, ArrayWidget>[K];
-  }>;
 }
 
-export type Widget =
+type Widget =
   | TextWidget
   | TextareaWidget
   | DateWidget
@@ -87,13 +78,6 @@ export type Widget =
   | SelectWidget
   | ArrayWidget;
 
-export type Schema = {
-  id: string | undefined;
-  name?: string;
-  description?: string;
-  widgets: Array<Widget>;
-};
-
 type WidenLiteral<T> = T extends string
   ? string
   : T extends number
@@ -102,8 +86,73 @@ type WidenLiteral<T> = T extends string
   ? boolean
   : unknown;
 
+type ArrayWidgetProps<T extends ArrayWidget> = Array<{
+  readonly [K in T["options"][number]["name"]]: Extract<
+    T["options"][number],
+    { name: K }
+  >["defaultValue"] extends infer U
+    ? WidenLiteral<U>
+    : never;
+}>;
+
 export type SchemaProps<T extends Schema> = {
-  [Name in T["widgets"][number]["name"]]: WidenLiteral<
-    Extract<T["widgets"][number], { name: Name }>["defaultValue"]
-  >;
+  readonly [Name in T["widgets"][number]["name"]]: Extract<
+    T["widgets"][number],
+    { name: Name }
+  > extends ArrayWidget
+    ? ArrayWidgetProps<
+        Extract<T["widgets"][number], ArrayWidget & { name: Name }>
+      >
+    : Extract<T["widgets"][number], { name: Name }> extends {
+        defaultValue: infer U;
+      }
+    ? WidenLiteral<U>
+    : never;
+};
+
+export type Schema = {
+  id: string | undefined;
+  name?: string;
+  description?: string;
+  widgets: Array<Widget>;
+};
+
+// =================================================================
+// ===================== Collection Types ==========================
+// =================================================================
+
+export type WidgetStoreLocaleString = {
+  [lang: string]: {
+    [key: string]: string;
+  };
+};
+
+export type WidgetStoreData = {
+  [key: string]:
+    | WidgetStoreLocaleString
+    | number
+    | boolean
+    | {
+        [key: string]: WidgetStoreLocaleString | number | boolean;
+      };
+};
+
+export type WidgetStore = {
+  id: string;
+  order: number;
+  data: WidgetStoreData;
+};
+
+export type PageCollection = {
+  title: string;
+  description: string;
+  keywords: string[];
+  path: string;
+  template: string;
+  status: "draft" | "published" | "review";
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  languages: string[];
+  widgets: WidgetStore[];
 };

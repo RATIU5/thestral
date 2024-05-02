@@ -1,0 +1,47 @@
+---
+import Base from "@/layouts/base.astro";
+import { insertPageCollection } from "@/lib/db/collections";
+import type { PageCollection } from "@/lib/types";
+
+if (Astro.request.method === "POST") {
+  const url = new URL(Astro.request.url);
+  if (url.searchParams.get("type") !== "newPage") {
+    const data = await Astro.request.formData();
+    const title = data.get("title") ?? "undefined";
+    const slug =
+      data.get("slug") ?? (title as string).toLowerCase().replace(/\s/g, "-");
+    const path = (slug as string).endsWith("/") ? slug : `${slug}/`;
+
+    const page: PageCollection = {
+      title: title as string,
+      path: path as string,
+      description: "",
+      keywords: [],
+      template: "_default",
+      status: "draft",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      languages: [],
+      widgets: [],
+    };
+
+    try {
+      insertPageCollection(page);
+      console.log("Page created");
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+---
+
+<Base title="Test">
+  <form method="POST" action="/test?type=newPage">
+    <h1>Test New Page</h1>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required />
+    <label for="slug">Slug:</label>
+    <input type="text" id="slug" name="slug" required />
+    <button type="submit">Submit</button>
+  </form>
+</Base>

@@ -9,17 +9,32 @@ export default {
       name: "title",
       type: "text",
       label: "Title",
-      defaultValue: {
-        en: "Hello, World!",
-      },
+      defaultValue: "Hello World",
     },
     {
       name: "description",
       type: "text",
       label: "Description",
-      defaultValue: {
-        en: "This is a test widget",
-      },
+      defaultValue: "This is a test widget",
+    },
+    {
+      type: "array",
+      name: "items",
+      label: "Items",
+      options: [
+        {
+          type: "text",
+          name: "itemName",
+          label: "Item Name",
+          defaultValue: "Default Item Name",
+        },
+        {
+          type: "number",
+          name: "itemQuantity",
+          label: "Item Quantity",
+          defaultValue: 1,
+        },
+      ],
     },
   ],
 } as const satisfies Schema;
