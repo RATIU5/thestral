@@ -1,30 +1,16 @@
 ---
-import { collectWidgets } from "@/lib/widgets-page/collect-widgets";
-import "@/styles/globals.css";
 
-// Array of wigets and their props taken from the database
-const data = [
-  {
-    widgetId: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
-    props: {
-      title: "Hello World",
-      description: "This is a description",
-    },
-  },
-];
-
-const components = await collectWidgets(data);
 ---
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    {components.map((w) => <w.component {...w.props} />)}
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h1>Astro</h1>
+	</body>
 </html>
