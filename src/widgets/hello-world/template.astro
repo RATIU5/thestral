@@ -1,0 +1,36 @@
+---
+import type { SchemaProps } from "@/lib/types/schema";
+import type schema from "./schema";
+
+type Props = SchemaProps<typeof schema>;
+
+const props = Astro.props;
+---
+
+<div>
+  <h1>Greeting</h1>
+  {props.greeting}
+  <h1>Font Size</h1>
+  {props.fontSize}
+  <h1>Bold</h1>
+  {props.bold}
+  <h1>Color</h1>
+  {props.color}
+  <h1>Alignment</h1>
+  {props.alignment}
+  <h1>Date</h1>
+  {props.date}
+  <h1>Cart</h1>
+  {
+    props.cart.map((i) => {
+      return (
+        <div>
+          <h2>{i.item}</h2>
+          <p>x{i.quantity}</p>
+        </div>
+      );
+    })
+  }
+  <h1>Custom</h1>
+  {props.custom.foo}
+</div>

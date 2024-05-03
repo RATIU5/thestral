@@ -9,7 +9,7 @@ type PrimitiveWidgetTypes =
   | "array"
   | "custom";
 
-type WidgetValueTypeMap = {
+export type WidgetValueTypeMap = {
   text: string;
   textarea: string;
   number: number;
@@ -44,7 +44,7 @@ interface TextAreaWidget extends BaseWidget {
 
 interface NumberWidget extends BaseWidget {
   type: "number";
-  placeholder?: WidgetValueTypeMap["number"];
+  defaultValue?: WidgetValueTypeMap["number"];
   min?: number;
   max?: number;
 }
@@ -71,13 +71,13 @@ interface DateWidget extends BaseWidget {
   defaultValue?: WidgetValueTypeMap["date"];
 }
 
-interface ArrayWidget extends BaseWidget {
+export interface ArrayWidget extends BaseWidget {
   type: "array";
   items: WidgetValueTypeMap["array"];
   defaultValue?: WidgetValueTypeMap["array"];
 }
 
-interface CustomWidget extends BaseWidget {
+export interface CustomWidget extends BaseWidget {
   type: "custom";
   data: WidgetValueTypeMap["custom"];
   defaultValue?: WidgetValueTypeMap["custom"];
