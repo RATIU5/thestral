@@ -1,0 +1,27 @@
+---
+import { createNewPageObject } from "@/lib/actions/page";
+import { Constants } from "@/lib/db/collection";
+import { storeNewPage } from "@/lib/db/page-actions";
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  const slug = data.get("slug") as string;
+  const pageObject = createNewPageObject(Constants.DefaultLanguageCode, slug);
+  await storeNewPage(pageObject);
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form method="POST">
+      <input type="text" name="slug" placeholder="Slug" />
+      <button type="submit">Create Page</button>
+    </form>
+  </body>
+</html>

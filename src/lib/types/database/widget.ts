@@ -1,9 +1,5 @@
 type WidgetData = {
-  [key: string]:
-    | unknown
-    | {
-        [key: string]: unknown;
-      };
+  [key: string]: string | number | boolean | undefined | { [key: string]: string | number | boolean | undefined }[];
 };
 
 type WidgetTranslation = {

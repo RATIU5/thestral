@@ -1,10 +1,11 @@
 type PageStatus = "draft" | "published" | "archived";
 
 type PageTranslation = {
-  languageCode: string;
-  title: string;
-  description: string;
-  keywords: string[];
+  [lang: string]: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
 };
 
 type PageWidget = {
@@ -12,16 +13,15 @@ type PageWidget = {
   order: number;
 };
 
-type Page = {
-  id: string;
+export type Page = {
   parentId?: string;
   path: string;
   template: string;
   status: PageStatus;
   defaultLanguageCode: string;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  translations: PageTranslation[];
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+  translations: PageTranslation;
   widgets: PageWidget[];
 };
