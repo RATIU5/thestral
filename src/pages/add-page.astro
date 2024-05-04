@@ -1,14 +1,29 @@
 ---
 import { createNewPageObject } from "@/lib/actions/page";
-import { Constants } from "@/lib/db/collection";
-import { storeNewPage } from "@/lib/db/page-actions";
+import { Languages } from "@/lib/enums";
+import { storeNewPage, getExistingPagePathsAndIds } from "@/lib/db/page-actions";
 
+type AddPageErrors = {
+  slugRequired?: string;
+};
+
+const errors: AddPageErrors = {};
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
   const slug = data.get("slug") as string;
-  const pageObject = createNewPageObject(Constants.DefaultLanguageCode, slug);
+  const parentId = data.get("parentId") as string;
+  if (!slug) {
+    errors.slugRequired = "Slug is required";
+  }
+  const pageObject = await createNewPageObject({
+    language: Languages.Default,
+    slug,
+    parentId: parentId === "" ? undefined : parentId,
+  });
   await storeNewPage(pageObject);
 }
+
+const existingPagePaths = await getExistingPagePathsAndIds();
 ---
 
 <!doctype html>
@@ -21,6 +36,11 @@ if (Astro.request.method === "POST") {
   <body>
     <form method="POST">
       <input type="text" name="slug" placeholder="Slug" />
+      {errors.slugRequired && <p>{errors.slugRequired}</p>}
+      <select name="parentId">
+        <option value="" selected>None</option>
+        {existingPagePaths?.map(({ _id, path }) => <option value={_id}>{path}</option>)}
+      </select>
       <button type="submit">Create Page</button>
     </form>
   </body>

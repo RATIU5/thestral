@@ -14,6 +14,9 @@ dependencies:
   mongodb:
     specifier: ^6.6.0
     version: 6.6.0
+  ts-custom-error:
+    specifier: ^3.3.1
+    version: 3.3.1
 
 devDependencies:
   '@typescript-eslint/parser':
@@ -4558,6 +4561,11 @@ packages:
     dependencies:
       typescript: 5.4.5
     dev: true
+
+  /ts-custom-error@3.3.1:
+    resolution: {integrity: sha512-5OX1tzOjxWEgsr/YEUWSuPrQ00deKLh6D7OTWcvNHm12/7QPyRh8SYpyWvA4IZv8H/+GQWQEh/kwo95Q9OVW1A==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /tsconfck@3.0.3(typescript@5.4.5):
     resolution: {integrity: sha512-4t0noZX9t6GcPTfBAbIbbIU4pfpCwh0ueq3S4O/5qXI1VwK1outmxhe9dOiEWqMz3MW2LKgDTpqWV+37IWuVbA==}
