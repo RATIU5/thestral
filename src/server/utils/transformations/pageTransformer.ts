@@ -1,7 +1,7 @@
-import { TranspileError } from "../custom-errors";
-import { getPagePathById } from "../db/page-actions";
-import { ErrorCodes, Languages } from "../enums";
-import type { Page } from "../types/database/page";
+import { TranspileError } from "@/server/utils/errors";
+import { getPagePathById } from "@/server/services/pageService";
+import { ErrorCodes, Languages } from "@/server/utils/enums";
+import type { Page } from "@/types/db/page";
 
 type NewPageObjectProps = {
   language: Page["defaultLanguageCode"];
@@ -9,7 +9,11 @@ type NewPageObjectProps = {
   parentId?: Page["parentId"];
 };
 
-export async function createNewPageObject({ language, slug, parentId }: NewPageObjectProps) {
+export async function createPageTransformer({ language, slug, parentId }: NewPageObjectProps) {
+  if (slug.trim() === "") {
+    throw new TranspileError(ErrorCodes.SlugIsEmpty, "slug is empty");
+  }
+
   let path = "";
   let currentTime = new Date().toISOString();
   if (parentId) {
@@ -17,15 +21,12 @@ export async function createNewPageObject({ language, slug, parentId }: NewPageO
     path = parentPath ?? "";
   }
 
-  // Regular expression pattern to match valid slugs
   const slugPattern = /^[a-zA-Z0-9_-]+$/;
 
-  // Check if the slug is valid
   if (!slugPattern.test(slug)) {
-    throw new TranspileError(ErrorCodes.SlugIsInvalid, "Invalid slug");
+    throw new TranspileError(ErrorCodes.SlugIsInvalid, "invalid slug");
   }
 
-  // Append the slug to the path
   path += slug + "/";
   const page: Page = {
     parentId,

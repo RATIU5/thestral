@@ -10,6 +10,9 @@ export enum Languages {
 
 export enum ErrorCodes {
   PageNotFound = 1000,
-  SlugAlreadyExists = 1001,
-  SlugIsInvalid = 2003,
+  ParentPageNotFound = 1003,
+  PageNotCreated = 1004,
+  SlugAlreadyExists = 1101,
+  SlugIsEmpty = 1102,
+  SlugIsInvalid = 1103,
 }

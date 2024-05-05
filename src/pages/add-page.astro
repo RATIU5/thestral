@@ -1,26 +1,25 @@
 ---
-import { createNewPageObject } from "@/lib/actions/page";
-import { Languages } from "@/lib/enums";
-import { storeNewPage, getExistingPagePathsAndIds } from "@/lib/db/page-actions";
+import { createPageController } from "@/server/controllers/pageController";
+import { getExistingPagePathsAndIds } from "@/server/services/pageService";
 
-type AddPageErrors = {
-  slugRequired?: string;
-};
-
-const errors: AddPageErrors = {};
+let message = "";
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
   const slug = data.get("slug") as string;
   const parentId = data.get("parentId") as string;
   if (!slug) {
-    errors.slugRequired = "Slug is required";
+    message = "Slug is required";
   }
-  const pageObject = await createNewPageObject({
-    language: Languages.Default,
-    slug,
-    parentId: parentId === "" ? undefined : parentId,
-  });
-  await storeNewPage(pageObject);
+  try {
+    await createPageController({
+      slug,
+      parentId: parentId === "" ? undefined : parentId,
+    });
+    message = "Page created";
+  } catch (e) {
+    message = (e as Error).message ?? "An error occurred";
+    console.error(e);
+  }
 }
 
 const existingPagePaths = await getExistingPagePathsAndIds();
@@ -36,7 +35,7 @@ const existingPagePaths = await getExistingPagePathsAndIds();
   <body>
     <form method="POST">
       <input type="text" name="slug" placeholder="Slug" />
-      {errors.slugRequired && <p>{errors.slugRequired}</p>}
+      {message && <p>{message}</p>}
       <select name="parentId">
         <option value="" selected>None</option>
         {existingPagePaths?.map(({ _id, path }) => <option value={_id}>{path}</option>)}

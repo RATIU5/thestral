@@ -1,23 +1,32 @@
-import type { Page } from "@/lib/types/database/page";
-import { executeQuery } from "@/lib/db/connection";
-import { Collection, ErrorCodes } from "@/lib/enums";
-import { DatabaseError } from "../custom-errors";
+import type { Page } from "@/types/db/page";
+import { executeQuery } from "@/server/services/db";
+import { Collection, ErrorCodes } from "@/server/utils/enums";
+import { DatabaseError } from "@/server/utils/errors";
 import { ObjectId } from "mongodb";
 
-export async function storeNewPage(page: Page) {
+export async function createPageService(page: Page) {
   await executeQuery(async (db) => {
     const collection = db.collection(Collection.Pages);
-    const allPagePaths = (await collection.distinct("path", {})) as string[];
 
-    if (allPagePaths) {
-      const existingSlug = allPagePaths.find((path) => path === page.path);
-      if (existingSlug) {
-        throw new DatabaseError(ErrorCodes.SlugAlreadyExists, "slug already exists");
+    const existingPage = await collection.findOne({ path: page.path, parentId: page.parentId });
+    if (existingPage) {
+      throw new DatabaseError(ErrorCodes.SlugAlreadyExists, "slug already exists");
+    }
+
+    if (page.parentId) {
+      const parentPage = await collection.findOne(
+        { _id: new ObjectId(page.parentId) },
+        { projection: { path: 1, _id: 0 } },
+      );
+      if (!parentPage) {
+        throw new DatabaseError(ErrorCodes.ParentPageNotFound, "parent page not found");
       }
     }
 
-    const pages = db.collection(Collection.Pages);
-    await pages.insertOne(page);
+    const newPage = await collection.insertOne(page);
+    if (!newPage) {
+      throw new DatabaseError(ErrorCodes.PageNotCreated, "page not created");
+    }
   });
 }
 

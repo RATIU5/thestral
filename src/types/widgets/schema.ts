@@ -1,4 +1,4 @@
-import type { ArrayWidget, CustomWidget, Widget, WidgetValueTypeMap } from "./widget";
+import type { ArrayWidget, CustomWidget, Widget, WidgetValueTypeMap } from "@/types/widgets/widget";
 
 export type Schema = {
   id: string;

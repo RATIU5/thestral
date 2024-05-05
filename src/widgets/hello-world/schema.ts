@@ -1,4 +1,4 @@
-import type { Schema } from "@/lib/types/schema";
+import type { Schema } from "@/types/widgets/schema";
 
 export default {
   id: "hello-world",
