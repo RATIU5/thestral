@@ -24,7 +24,7 @@ export async function executeQuery<T>(callback: (client: Db) => Promise<T>) {
     const db = await connect();
     return await callback(db.db(import.meta.env.MONGODB_NAME));
   } catch (e) {
-    console.error(e);
+    throw e;
   } finally {
     await disconnect();
   }

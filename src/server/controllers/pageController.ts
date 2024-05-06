@@ -10,6 +10,7 @@ export async function createPageController({ slug, parentId }: { slug: Page["pat
       slug,
       parentId,
     });
+
     await createPageService(page);
   } catch (e) {
     throw e;
