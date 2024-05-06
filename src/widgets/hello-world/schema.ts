@@ -3,6 +3,7 @@ import type { Schema } from "@/types/widgets/schema";
 export default {
   id: "hello-world",
   name: "Hello World",
+  description: "A simple widget that displays a greeting.",
   widgets: [
     {
       type: "text",
