@@ -3,6 +3,7 @@ type PageStatus = "draft" | "published" | "archived";
 type PageTranslation = {
   [lang: string]: {
     title: string;
+    metaTitle: string;
     description: string;
     keywords: string[];
   };

@@ -7,6 +7,12 @@ export type Schema = {
   widgets: Array<Widget>;
 };
 
+export type WidgetDetails = {
+  id: Schema["id"];
+  name: Schema["name"];
+  description?: Schema["description"];
+};
+
 export type SchemaProps<T extends Schema> = {
   readonly [WidgetName in T["widgets"][number]["name"]]: T["widgets"][number] extends infer Widget
     ? Widget extends { name: WidgetName }

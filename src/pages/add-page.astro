@@ -1,6 +1,5 @@
 ---
-import { createPageController } from "@/server/controllers/pageController";
-import { getExistingPagePathsAndIds } from "@/server/services/pageService";
+import { createPageController, getExistingPagePathsAndIdsController } from "@/server/controllers/pageController";
 
 let message = "";
 if (Astro.request.method === "POST") {
@@ -22,7 +21,7 @@ if (Astro.request.method === "POST") {
   }
 }
 
-const existingPagePaths = await getExistingPagePathsAndIds();
+const existingPagePaths = await getExistingPagePathsAndIdsController();
 ---
 
 <!doctype html>

@@ -30,29 +30,10 @@ export async function createPageService(page: Page) {
   });
 }
 
-export async function getFullDataPageById(id: string) {
-  const page = await executeQuery(async (db) => {
-    const collection = db.collection(Collection.Pages);
-    return await collection.findOne({});
-  });
-  if (!page) {
-    throw new DatabaseError(ErrorCodes.PageNotFound, "page not found");
-  }
-}
-
-// TODO: Maybe not call this database fetch twice
-export async function getExistingPagePathsAndIds(): Promise<Array<{ _id: string; path: string }> | undefined> {
-  return executeQuery(async (db) => {
+export async function getExistingPagePathsAndIdsService(): Promise<Array<{ _id: string; path: string }> | undefined> {
+  return await executeQuery(async (db) => {
     const collection = db.collection(Collection.Pages);
     const result = await collection.find({}, { projection: { _id: 1, path: 1 } }).toArray();
     return result.map((doc) => ({ _id: doc._id.toString(), path: doc.path }));
-  });
-}
-
-export async function getPagePathById(pageId: string): Promise<string | undefined> {
-  return executeQuery(async (db) => {
-    const collection = db.collection(Collection.Pages);
-    const result = await collection.findOne({ _id: new ObjectId(pageId) }, { projection: { path: 1 } });
-    return result?.path;
   });
 }
