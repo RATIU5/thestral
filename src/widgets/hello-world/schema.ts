@@ -1,7 +1,7 @@
 import type { Schema } from "@/types/widgets/schema";
 
 export default {
-  id: "hello-world",
+  id: "507c7f79bcf86cd7994f6c0e",
   name: "Hello World",
   description: "A simple widget that displays a greeting.",
   widgets: [

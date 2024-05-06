@@ -1,7 +1,14 @@
+import dynamic from "astro:import";
+import type { PageWidgetData } from "@/types/db/page";
 import type { Schema, WidgetDetails } from "@/types/widgets/schema";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
+import type { Widget } from "@/types/db/widget";
+import { executeQuery } from "./db";
+import { Collection } from "../utils/enums";
+import type { ObjectId } from "mongodb";
 
 export async function readWidgetDetailsService() {
   const widgetArray: WidgetDetails[] = [];
@@ -33,11 +40,86 @@ export async function readWidgetDetailsService() {
       widgetArray.push({
         name: data.name ?? widget,
         description: data.description,
-        id: data.id,
+        uuid: data.id,
       });
     }
   } catch (e) {
     throw e;
   }
   return widgetArray;
+}
+
+export async function getWidgetLocationFromIdService(id: string) {
+  try {
+    // Read the map.json file to get the widget name from it's id
+    const map = (await import("@/widgets/map.json")).default;
+    return map[id as keyof typeof map];
+  } catch (e) {
+    if (__VERBOSE__) {
+      console.error(e);
+    } else {
+      console.error(
+        "error: failed to import widget map at 'src/widgets/map.json'; please run 'thes map' to generate it",
+      );
+    }
+    return "<undefined>";
+  }
+}
+
+export async function getWidgetMap() {
+  try {
+    return (await import("@/widgets/map.json")).default as { [x: string]: string };
+  } catch (e) {
+    if (__VERBOSE__) {
+      console.error(e);
+    } else {
+      console.error(
+        "error: failed to import widget map at 'src/widgets/map.json'; please run 'thes map' to generate it",
+      );
+    }
+    return {};
+  }
+}
+
+/**
+ * Reads the widget component and props from the database
+ * @param data the widget data pulled from the database
+ * @returns an array of Astro components and their props
+ */
+export async function readWidgetComponentService(data: PageWidgetData[]) {
+  const components: Array<{
+    component: AstroComponentFactory;
+    props: { [x: string]: any };
+  }> = [];
+  let map = await getWidgetMap();
+  for (const w of data) {
+    // Pull the widget name from the map
+    const widgetName = map[w.widgetId as keyof typeof map];
+    const widgetTemplatePath = `widgets/${widgetName}/template.astro`;
+    try {
+      const component = await dynamic(widgetTemplatePath);
+      components.push({
+        component,
+        props: w.data,
+      });
+    } catch (e) {
+      if (__VERBOSE__) {
+        console.error(e);
+      } else {
+        console.warn(`warning: failed to import widget at '${widgetTemplatePath}'; skipping`);
+      }
+      return components;
+    }
+  }
+  return components;
+}
+
+export async function createNewWidgetService(widget: Widget) {
+  return await executeQuery(async (db) => {
+    const collection = db.collection(Collection.Widgets);
+    return (await collection.insertOne(widget)) as {
+      insertedId: ObjectId;
+      acknowledged: boolean;
+    };
+  });
 }

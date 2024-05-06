@@ -8,7 +8,7 @@ export type Schema = {
 };
 
 export type WidgetDetails = {
-  id: Schema["id"];
+  uuid: Schema["id"];
   name: Schema["name"];
   description?: Schema["description"];
 };

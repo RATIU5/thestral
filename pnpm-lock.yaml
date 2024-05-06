@@ -11,6 +11,9 @@ dependencies:
   astro:
     specifier: ^4.7.1
     version: 4.7.1(@types/node@20.12.9)(typescript@5.4.5)
+  astro-dynamic-import:
+    specifier: ^1.1.1
+    version: 1.1.1(astro@4.7.1)
   mongodb:
     specifier: ^6.6.0
     version: 6.6.0
@@ -1445,6 +1448,14 @@ packages:
   /ast-types-flow@0.0.8:
     resolution: {integrity: sha512-OH/2E5Fg20h2aPrbe+QL8JZQFko0YZaF+j4mnQ7BGhfavO7OpSLa8a0y9sBwomHdSbkhTS8TQNayBfnW5DwbvQ==}
     dev: true
+
+  /astro-dynamic-import@1.1.1(astro@4.7.1):
+    resolution: {integrity: sha512-0Oe2UiEv00R+5riPQlTdCXHhwfsM28xG+eeuugFULixGG0XVnkJnkPJZrl4ba1+z68wpmf3KjBjJvh/gGCpexg==}
+    peerDependencies:
+      astro: '4'
+    dependencies:
+      astro: 4.7.1(@types/node@20.12.9)(typescript@5.4.5)
+    dev: false
 
   /astro-eslint-parser@1.0.2(typescript@5.4.5):
     resolution: {integrity: sha512-8hJaCuqxObShWl2wEsnASqh/DbQ2O+S66m0Q3ctJlzBPEQ4pfGwwama3FCjZO3GDLQsjvn1T0v93Vxyu/+5fGw==}

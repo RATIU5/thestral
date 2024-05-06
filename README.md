@@ -45,3 +45,8 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## TODO
+
+- Active widgets and new widgets in admin
+- Archived status of widgets, controlled on admin page

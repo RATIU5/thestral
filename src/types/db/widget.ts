@@ -1,14 +1,18 @@
-type WidgetData = {
-  [key: string]: string | number | boolean | undefined | { [key: string]: string | number | boolean | undefined }[];
+export type WidgetData = {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | undefined
+    | { [key: string]: string | number | boolean | undefined }[]
+    | { [key: string]: unknown };
 };
 
-type WidgetTranslation = {
-  languageCode: string;
-  data: WidgetData;
+export type WidgetTranslation = {
+  [languageCode: string]: WidgetData;
 };
 
-type Widget = {
-  id: string;
-  type: string;
-  translations: WidgetTranslation[];
+export type Widget = {
+  uuid: string;
+  translations: WidgetTranslation;
 };

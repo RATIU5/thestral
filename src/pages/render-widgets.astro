@@ -1,0 +1,45 @@
+---
+import { readWidgetComponentController } from "@/server/controllers/widgetController";
+import type { PageWidgetData } from "@/types/db/page";
+
+const data: PageWidgetData[] = [
+  {
+    widgetId: "TlslrN0Y8vDdGQQ3NIZ8XfPgjYvzLiJe",
+    data: {
+      en: {
+        greeting: "Hello",
+        fontSize: 20,
+        bold: true,
+        color: "black",
+        alignment: "right",
+        date: "2021-09-01",
+        cart: [
+          { item: "apple", quantity: 2 },
+          {
+            item: "banana",
+            quantity: 3,
+          },
+        ],
+        custom: {
+          foo: "bar",
+          baz: 42,
+        },
+      },
+    },
+  },
+];
+const widgets = await readWidgetComponentController(data);
+for (const w of widgets) {
+  console.log(w);
+}
+---
+
+<div>
+  {
+    widgets.map(({ component: Component, props }) => (
+      <div>
+        <Component {...props["en"]} />
+      </div>
+    ))
+  }
+</div>

@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/check": "^0.5.10",
     "astro": "^4.7.1",
+    "astro-dynamic-import": "^1.1.1",
     "mongodb": "^6.6.0",
     "ts-custom-error": "^3.3.1"
   },

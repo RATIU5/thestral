@@ -40,6 +40,7 @@ export async function createPageTransformer({ language, slug, parentId }: NewPag
     translations: {
       [language]: {
         title: "",
+        metaTitle: "",
         description: "",
         keywords: [],
       },
