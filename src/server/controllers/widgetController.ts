@@ -1,4 +1,3 @@
-import type { PageWidgetData } from "@/types/db/page";
 import {
   createNewWidgetService,
   readWidgetComponentService,
@@ -16,9 +15,9 @@ export async function readWidgetComponentController(data: PageWidgetData[]) {
 }
 
 export async function createNewWidgetController(widgetUuid: string) {
-  // TODO: fill out the translations data for the new widget
   const newWidget: Widget = {
     uuid: widgetUuid,
+    status: "created",
     translations: {
       [Languages.Default]: {},
     },
