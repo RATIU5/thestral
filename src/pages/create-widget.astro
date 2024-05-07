@@ -1,0 +1,50 @@
+---
+import { readWidgetDetailsController } from "@/server/controllers/widgetController";
+
+const widgets = await readWidgetDetailsController();
+---
+
+<div>
+  <form method="POST" id="widgetForm">
+    <select name="widgetId">
+      <option value="" disabled selected>Select a widget</option>
+      {widgets?.map((p) => <option value={p.widgetId}>{p.name}</option>)}
+    </select>
+    <input type="text" name="name" placeholder="Widget Name" />
+    <input type="text" name="description" placeholder="Description" />
+    <select name="status">
+      <option value="active">Active</option>
+      <option value="inactive" selected>Inactive</option>
+      <option value="archived">Archived</option>
+    </select>
+    <button type="submit">Add widget</button>
+  </form>
+</div>
+
+<script>
+  import type { RequestBody } from "./api/widgets/create-widget";
+
+  const form = document.getElementById("widgetForm") as HTMLFormElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries()) as RequestBody;
+
+    const response = await fetch("/api/widgets/create-widget", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      alert("Widget created successfully");
+      form.reset();
+    } else {
+      alert("Failed to create widget");
+    }
+  });
+</script>

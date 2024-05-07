@@ -1,27 +1,32 @@
 ---
-import type { SchemaProps } from "@/lib/types";
+import type { SchemaProps } from "@/types/widgets/schema";
 import type schema from "./schema";
 
 type Props = SchemaProps<typeof schema>;
-const { title, description, items } = Astro.props;
+
+const props = Astro.props;
+console.log(props.cart);
 ---
 
-<div class="w-full bg-red-50">
-  <h1 class="text-3xl font-bold">{title}</h1>
-  <p>{description}</p>
-
+<div style={{ width: "100%", maxWidth: "300px" }}>
+  <p style={{ fontSize: props.fontSize + "px", color: props.color, textAlign: props.alignment }}>
+    {props.bold ? <strong>{props.greeting}</strong> : props.greeting}
+  </p>
+  <h1>Date</h1>
+  {props.date}
+  <h1>Cart</h1>
   {
-    items.map((i) => {
+    props.cart.map((i) => {
       return (
-        <div class="bg-white p-4 my-4">
-          <h2 class="text-xl font-bold">{i.itemName}</h2>
-          <p>{i.itemQuantity}</p>
+        <div>
+          <p>
+            <span>{i.item}</span> x{i.quantity}
+          </p>
         </div>
       );
     })
   }
+  <h1>Custom</h1>
+  {props.custom.foo}
+  {props.custom.baz}
 </div>
-
-<script>
-  console.log("Hello, World");
-</script>

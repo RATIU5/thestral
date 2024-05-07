@@ -1,11 +1,7 @@
 import url from "node:url";
 import path from "node:path";
 import fs from "node:fs";
-import type {
-  AstroConfig,
-  AstroIntegration,
-  AstroIntegrationLogger,
-} from "astro";
+import type { AstroConfig, AstroIntegration, AstroIntegrationLogger } from "astro";
 import { PROPAGATED_ASSET_FLAG } from "../node_modules/astro/dist/content/consts.js";
 
 interface Options {}
@@ -16,10 +12,7 @@ export default function (_?: Options): AstroIntegration {
     hooks: {
       "astro:config:setup"({ config, updateConfig, logger }) {
         const srcDirName = path
-          .relative(
-            url.fileURLToPath(config.root),
-            url.fileURLToPath(config.srcDir)
-          )
+          .relative(url.fileURLToPath(config.root), url.fileURLToPath(config.srcDir))
           .replaceAll("\\", "/");
         updateConfig({
           vite: {
@@ -28,18 +21,14 @@ export default function (_?: Options): AstroIntegration {
                 name: "astro-dynamic-import/vite",
                 resolveId(source) {
                   if (source === "astro:import") {
-                    return this.resolve(
-                      "astro-dynamic-import/runtime/virtual-module.ts"
-                    );
+                    return this.resolve("astro-dynamic-import/runtime/virtual-module.ts");
                   }
                   if (source === "astro-dynamic-import:internal") return source;
                 },
                 load(id) {
                   if (id === "astro-dynamic-import:internal") {
                     return (
-                      `export const srcDirName = ${JSON.stringify(
-                        srcDirName
-                      )}\n` +
+                      `export const srcDirName = ${JSON.stringify(srcDirName)}\n` +
                       `export const lookupMap = import.meta.glob('/${srcDirName}/widgets/*/template.astro', { query: { ${PROPAGATED_ASSET_FLAG}: true } })\n`
                     );
                   }
@@ -60,11 +49,7 @@ export default function (_?: Options): AstroIntegration {
   };
 }
 
-function injectEnvDTS(
-  config: AstroConfig,
-  logger: AstroIntegrationLogger,
-  specifier: URL | string
-) {
+function injectEnvDTS(config: AstroConfig, logger: AstroIntegrationLogger, specifier: URL | string) {
   const envDTsPath = url.fileURLToPath(new URL("env.d.ts", config.srcDir));
 
   if (specifier instanceof URL) {
@@ -85,11 +70,11 @@ function injectEnvDTS(
   const newEnvDTsContents = envDTsContents
     .replace(
       `/// <reference types='astro/client' />`,
-      `/// <reference types='astro/client' />\n/// <reference types='${specifier}' />\n`
+      `/// <reference types='astro/client' />\n/// <reference types='${specifier}' />\n`,
     )
     .replace(
       `/// <reference types="astro/client" />`,
-      `/// <reference types="astro/client" />\n/// <reference types="${specifier}" />\n`
+      `/// <reference types="astro/client" />\n/// <reference types="${specifier}" />\n`,
     );
 
   // the odd case where the user changed the reference to astro/client

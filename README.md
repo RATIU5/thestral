@@ -1,29 +1,52 @@
-## Todo
+# Astro Starter Kit: Minimal
 
-- [ ] Utility to generate a new widget
-- [ ] Utility to check if all widgets are setup correctly
-- [ ] Create pages for each widget for development purposes
-- [ ] Create a page to view all widgets on a single page
-
-## Install Database
-
-Install MongoDB as described in the [official documentation](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/#installing-mongodb-7.0-edition-edition).
-
-Update your `.env` file with the following for development:
-
-```env
-MONGODB_URI=mongodb://<username>:<password>@localhost:27017/myDatabase
+```sh
+npm create astro@latest -- --template minimal
 ```
 
-```bash
-mongosh
-show dbs # Show all databases
-use <database> # Switch to a database
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
 
-# Create a new admin user
-use admin
-db.auth("specialAdminUser", passwordPrompt())
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-# Create a collection https://www.mongodb.com/docs/manual/reference/method/db.createCollection/#examples
-db.createCollection("myCollection", {...})
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
+
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+
+Any static assets, like images, can be placed in the `public/` directory.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## TODO
+
+- Active widgets and new widgets in admin
+- Archived status of widgets, controlled on admin page

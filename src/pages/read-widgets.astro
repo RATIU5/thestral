@@ -1,0 +1,26 @@
+---
+import { readWidgetDetailsController } from "@/server/controllers/widgetController";
+import type { WidgetDetails } from "@/types/widgets/schema";
+
+let widgetArray: WidgetDetails[] = [];
+try {
+  const widgetData = await readWidgetDetailsController();
+  widgetArray = [...widgetData];
+} catch (e) {
+  console.error(e);
+}
+---
+
+<div>
+  {
+    widgetArray.map((w) => {
+      return (
+        <div>
+          <h1>{w.name}</h1>
+          <p>{w.description}</p>
+          <br />
+        </div>
+      );
+    })
+  }
+</div>

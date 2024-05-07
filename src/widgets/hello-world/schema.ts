@@ -1,40 +1,77 @@
-import type { Schema } from "@/lib/types";
+import type { Schema } from "@/types/widgets/schema";
 
 export default {
-  id: "wN0dXBrFAILbAPjpvAlZlDmEhy3dIywe",
+  id: "507c7f79bcf86cd7994f6c0e",
   name: "Hello World",
-  description: "This is a test widget",
+  description: "A simple widget that displays a greeting.",
   widgets: [
     {
-      name: "title",
       type: "text",
-      label: "Title",
-      defaultValue: "Hello World",
+      name: "greeting",
+      label: "Greeting",
+      defaultValue: "Hello, World!",
     },
     {
-      name: "description",
-      type: "text",
-      label: "Description",
-      defaultValue: "This is a test widget",
+      type: "number",
+      name: "fontSize",
+      label: "Font Size",
+    },
+    {
+      type: "checkbox",
+      name: "bold",
+      label: "Bold",
+      defaultValue: false,
+    },
+    {
+      type: "select",
+      name: "color",
+      label: "Color",
+      options: [
+        { label: "Red", value: "red" },
+        { label: "Green", value: "green" },
+        { label: "Blue", value: "blue" },
+      ],
+    },
+    {
+      type: "radio",
+      name: "alignment",
+      label: "Alignment",
+      defaultValue: "left",
+      options: [
+        { label: "Left", value: "left" },
+        { label: "Center", value: "center" },
+        { label: "Right", value: "right" },
+      ],
+    },
+    {
+      type: "date",
+      name: "date",
+      label: "Date",
     },
     {
       type: "array",
-      name: "items",
-      label: "Items",
-      options: [
+      name: "cart",
+      label: "Cart",
+      items: [
         {
           type: "text",
-          name: "itemName",
-          label: "Item Name",
-          defaultValue: "Default Item Name",
+          name: "item",
+          label: "Item",
         },
         {
           type: "number",
-          name: "itemQuantity",
-          label: "Item Quantity",
-          defaultValue: 1,
+          name: "quantity",
+          label: "Quantity",
         },
       ],
+    },
+    {
+      type: "custom",
+      name: "custom",
+      data: {
+        foo: "bar",
+        baz: 42,
+      },
     },
   ],
 } as const satisfies Schema;
