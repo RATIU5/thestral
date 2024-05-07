@@ -1,16 +1,16 @@
 import dynamic from "astro:import";
-import type { PageWidgetData } from "@/types/db/page";
+import type { PageWidgetData } from "@/types/db/widget";
 import type { Schema, WidgetDetails } from "@/types/widgets/schema";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
-import type { Widget } from "@/types/db/widget";
+import type { DB_Widget } from "@/types/db/widget";
 import { executeQuery } from "./db";
 import { Collection } from "../utils/enums";
 import type { ObjectId } from "mongodb";
 
-export async function readWidgetDetailsService() {
+async function readWidgetDetailsService() {
   const widgetArray: WidgetDetails[] = [];
   const widgetPath = path.join(process.cwd(), "src/widgets");
   if (!existsSync(widgetPath)) {
@@ -40,30 +40,13 @@ export async function readWidgetDetailsService() {
       widgetArray.push({
         name: data.name ?? widget,
         description: data.description,
-        uuid: data.id,
+        widgetId: data.id,
       });
     }
   } catch (e) {
     throw e;
   }
   return widgetArray;
-}
-
-export async function getWidgetLocationFromIdService(id: string) {
-  try {
-    // Read the map.json file to get the widget name from it's id
-    const map = (await import("@/widgets/map.json")).default;
-    return map[id as keyof typeof map];
-  } catch (e) {
-    if (__VERBOSE__) {
-      console.error(e);
-    } else {
-      console.error(
-        "error: failed to import widget map at 'src/widgets/map.json'; please run 'thes map' to generate it",
-      );
-    }
-    return "<undefined>";
-  }
 }
 
 export async function getWidgetMap() {
@@ -114,7 +97,32 @@ export async function readWidgetComponentService(data: PageWidgetData[]) {
   return components;
 }
 
-export async function createNewWidgetService(widget: Widget) {
+export async function listWidgetsService(status: DB_Widget["status"]) {
+  switch (status) {
+    case "inactive": {
+      const widgets = await readWidgetDetailsService();
+      console.log(widgets);
+
+      return widgets.map((widget) => ({
+        ...widget,
+        status: "inactive",
+      }));
+    }
+    case "active": {
+      const widgets = await executeQuery(async (db) => {
+        const collection = db.collection(Collection.Widgets);
+        return await collection.find({ status: "active" }).toArray();
+      });
+      console.log(widgets);
+      return [];
+    }
+    default: {
+      return [];
+    }
+  }
+}
+
+export async function createNewWidgetService(widget: DB_Widget) {
   return await executeQuery(async (db) => {
     const collection = db.collection(Collection.Widgets);
     return (await collection.insertOne(widget)) as {

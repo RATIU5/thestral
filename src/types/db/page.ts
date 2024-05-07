@@ -3,6 +3,7 @@ import type { ObjectId } from "mongodb";
 export type DB_Page = {
   /**
    * Optional parent ID, used to create page hierarchies
+   * @note This id is created by MongoDB when the time the page was added to the database
    */
   parentId?: string;
   /**

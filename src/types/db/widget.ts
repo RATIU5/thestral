@@ -15,9 +15,9 @@ export type DB_Widget = {
    */
   widgetId: string;
   /**
-   * An optional title to describe the widget in the admin panel
+   * An optional name to describe the widget in the admin panel
    */
-  title?: string;
+  name?: string;
   /**
    * An optional description to describe the widget in the admin panel
    */
@@ -53,4 +53,9 @@ type DB_WidgetTranslation = {
   [languageCode: string]: DB_WidgetData;
 };
 
-type DB_WidgetStatus = "active" | "inactive" | "archived";
+export type DB_WidgetStatus = "active" | "inactive" | "archived";
+
+export type PageWidgetData = {
+  widgetId: string;
+  data: DB_WidgetTranslation;
+};

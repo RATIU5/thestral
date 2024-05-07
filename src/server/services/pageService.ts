@@ -1,11 +1,10 @@
-import type { Page, PageWidget } from "@/types/db/page";
 import { executeQuery } from "@/server/services/db";
 import { Collection, ErrorCodes } from "@/server/utils/enums";
 import { DatabaseError } from "@/server/utils/errors";
+import type { DB_Page } from "@/types/db/page";
 import { ObjectId } from "mongodb";
-import type { Widget } from "@/types/db/widget";
 
-export async function createPageService(page: Page) {
+export async function createPageService(page: DB_Page) {
   await executeQuery(async (db) => {
     const collection = db.collection(Collection.Pages);
 
@@ -44,17 +43,5 @@ export async function getPagePathById(pageId: string): Promise<string | undefine
     const collection = db.collection(Collection.Pages);
     const result = await collection.findOne({ _id: new ObjectId(pageId) }, { projection: { path: 1 } });
     return result?.path;
-  });
-}
-
-export async function addWidgetToPageService(widgetId: ObjectId, pageId: string) {
-  await executeQuery(async (db) => {
-    const collection = db.collection(Collection.Pages);
-    console.log(widgetId, pageId);
-
-    const page = await collection.findOne({ _id: new ObjectId(pageId) });
-    if (!page) {
-      throw new DatabaseError(ErrorCodes.PageNotFound, "page not found");
-    }
   });
 }
