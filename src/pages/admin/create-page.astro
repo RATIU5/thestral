@@ -1,0 +1,55 @@
+---
+import Button from "@/components/button.astro";
+import Form from "@/components/form.astro";
+import Input from "@/components/input.astro";
+import Select from "@/components/select.astro";
+import {
+  createPage,
+  getExistingPages,
+} from "@/core/controllers/pageController";
+import { generateFullPaths } from "@/core/utils/pageUtils";
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const entries = Object.fromEntries(formData.entries()) as {
+    slug: string;
+    parentId: string;
+  };
+
+  if (entries.slug.trim() === "") {
+    return new Response("Slug is required", { status: 400 });
+  }
+
+  const page = {
+    slug: entries.slug,
+    parentId: +entries.parentId || null,
+  };
+
+  const res = await createPage(page);
+
+  if (res) {
+    return new Response("Page created", { status: 201 });
+  } else {
+    return new Response("Failed to create page", { status: 500 });
+  }
+}
+
+const existingPages = await getExistingPages();
+const existingPagePaths = generateFullPaths(existingPages);
+console.log(existingPagePaths);
+---
+
+<Form title="Create Page" method="POST">
+  <Input
+    type="text"
+    id="slug"
+    name="slug"
+    placeholder="about us"
+    label="Slug"
+  />
+  <Select label="Parent page" name="parentId">
+    <option value="" selected>None</option>
+    {existingPagePaths.map((p) => <option value={p.id}>{p.path}</option>)}
+  </Select>
+  <Button type="submit">Submit</Button>
+</Form>
