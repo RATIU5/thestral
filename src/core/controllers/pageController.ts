@@ -1,4 +1,7 @@
+import { z } from "zod";
 import sql from "../utils/dbConnection";
+import { transformSlug } from "../utils/pageUtils";
+import { createForm } from "simple:form";
 
 // TODO: Replace generic Errors with custom errors
 
@@ -13,6 +16,43 @@ export async function getExistingPages() {
     parentId: page.parent_id,
     slug: page.slug,
   }));
+}
+
+/**
+ * Check if a page with the same slug and parent_id already exists
+ * @param param0 the slug and parent_id to check for duplicates
+ * @returns whether a page with the same slug and parent_id already exists or not
+ */
+export async function hasDuplicateSlug({
+  slug,
+  parentId,
+}: {
+  slug: string | null;
+  parentId: number | null;
+}) {
+  let hasDuplicate = false;
+  if (slug === null) {
+    return hasDuplicate;
+  }
+  try {
+    slug = transformSlug(slug);
+
+    let existingPages;
+    if (parentId !== null) {
+      existingPages =
+        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id = ${parentId}`;
+    } else {
+      existingPages =
+        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id IS NULL`;
+    }
+    if (existingPages.length > 0) {
+      hasDuplicate = true;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
+  return hasDuplicate;
 }
 
 /**
@@ -34,15 +74,7 @@ export async function createPage({
       throw new Error("Slug cannot be empty");
     }
 
-    // Convert the slug to lowercase and replace spaces with hyphens
-    slug = slug.trim().replace(/\s+/g, "-").toLowerCase();
-
-    // Slug can only contain lowercase alphanumeric characters and hyphens
-    if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) === false) {
-      throw new Error(
-        "Slug can only contain lowercase alphanumeric characters and hyphens"
-      );
-    }
+    slug = transformSlug(slug);
 
     // Cannot have duplicate slugs for the same parent
     let existingPages;
@@ -97,6 +129,22 @@ export async function readPages({ fields }: { fields: FieldsArray }) {
   return res as PageColumns[];
 }
 
+export async function readPageById({
+  fields,
+  id,
+}: {
+  fields: FieldsArray;
+  id: number;
+}) {
+  let res = {};
+  try {
+    res = await sql`SELECT ${sql(fields)} FROM page WHERE id = ${id} LIMIT 1`;
+  } catch (e) {
+    console.error(e);
+  }
+  return res as PageColumns[];
+}
+
 /**
  * Delete a page by its id
  * @param id the id of the page to delete
@@ -118,24 +166,55 @@ export async function deletePage(id: number) {
   return status;
 }
 
+export const updateForm = createForm({
+  slug: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  status: z.enum(["draft", "published", "archived", "review"]),
+  parent_id: z.number(),
+  admin_name: z.string().min(1).optional(),
+});
+const updateFieldsObject = z.object(updateForm["validator"]);
+
 export async function updatePage({
   id,
   fields,
 }: {
   id: number;
-  fields: Partial<PageColumns>;
+  fields: z.infer<typeof updateFieldsObject> | undefined;
 }) {
-  let status = false;
+  let result = false;
+
+  if (!fields) {
+    return result;
+  }
+
   try {
-    if (Object.keys(fields).length === 0) {
-      status = true;
-      return status;
+    const { slug, parent_id, status, admin_name } = fields;
+
+    if (slug.trim() === "") {
+      throw new Error("Slug cannot be empty");
     }
 
-    await sql`UPDATE page SET ${sql(fields)} WHERE id = ${id}`;
-    status = true;
+    if (await hasDuplicateSlug({ slug, parentId: parent_id ?? null })) {
+      throw new Error("Page with the same slug already exists");
+    }
+
+    const updateFields = {
+      slug: transformSlug(slug),
+      parent_id: (parent_id < 0 ? null : parent_id) ?? null,
+      status,
+      admin_name: admin_name ?? null,
+    };
+
+    console.log(updateFields);
+
+    await sql`UPDATE page SET ${sql(updateFields)} WHERE id = ${id}`;
+    result = true;
   } catch (e) {
     console.error(e);
   }
-  return status;
+
+  return result;
 }

@@ -28,3 +28,23 @@ export function generateFullPaths(
 
   return fullPaths;
 }
+
+/**
+ * Transform a slug string to a valid slug
+ * @param slug the slug string to transform
+ * @returns the transformed slug
+ * @throws an error if the slug is invalid or empty
+ */
+export function transformSlug(slug: string) {
+  const newSlug = slug.trim().replace(/\s+/g, "-").toLowerCase();
+  if (newSlug === "") {
+    throw new Error("Slug cannot be empty");
+  }
+  // Slug can only contain lowercase alphanumeric characters and hyphens
+  if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(newSlug) === false) {
+    throw new Error(
+      "Slug can only contain lowercase alphanumeric characters and hyphens"
+    );
+  }
+  return newSlug;
+}

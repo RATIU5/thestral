@@ -3,9 +3,10 @@ import type { JSX } from "astro/jsx-runtime";
 
 type Props = JSX.IntrinsicElements["select"] & {
   label: string;
+  error: string[] | undefined;
 };
 
-const { id, label, ...props } = Astro.props;
+const { id, label, error, ...props } = Astro.props;
 ---
 
 <div class="w-full flex flex-col">
@@ -16,5 +17,6 @@ const { id, label, ...props } = Astro.props;
     {...props}
   >
     <slot />
+    {error?.map((e) => <p class="text-red-600 text-sm">{e}</p>)}
   </select>
 </div>

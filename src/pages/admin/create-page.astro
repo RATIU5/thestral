@@ -36,7 +36,6 @@ if (Astro.request.method === "POST") {
 
 const existingPages = await getExistingPages();
 const existingPagePaths = generateFullPaths(existingPages);
-console.log(existingPagePaths);
 ---
 
 <Form title="Create Page" method="POST">

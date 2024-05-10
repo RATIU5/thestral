@@ -24,6 +24,10 @@ CREATE TABLE IF NOT EXISTS language (
   code VARCHAR NOT NULL
 );
 
+
+-- Add default language
+INSERT INTO language (name, code) VALUES ('English', 'en');
+
 -- Create meta table
 CREATE TABLE IF NOT EXISTS meta (
   id SERIAL PRIMARY KEY,

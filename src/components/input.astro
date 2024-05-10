@@ -3,9 +3,10 @@ import type { JSX } from "astro/jsx-runtime";
 
 type Props = JSX.IntrinsicElements["input"] & {
   label: string;
+  error: string[] | undefined;
 };
 
-const { label, id, ...props } = Astro.props;
+const { label, id, error, ...props } = Astro.props;
 ---
 
 <div class="w-full flex flex-col">
@@ -15,4 +16,5 @@ const { label, id, ...props } = Astro.props;
     class="px-2 py-1 w-full rounded-md border border-slate-200"
     {...props}
   />
+  {error?.map((e) => <p class="text-red-600 text-sm">{e}</p>)}
 </div>
