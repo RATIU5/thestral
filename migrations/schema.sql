@@ -1,3 +1,6 @@
+-- Create the hstore extension
+CREATE EXTENSION IF NOT EXISTS hstore;
+
 -- Create enum type for page status
 CREATE TYPE page_status AS ENUM ('draft', 'published', 'archived', 'review');
 
@@ -19,30 +22,31 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Create language table
 CREATE TABLE IF NOT EXISTS language (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  code VARCHAR NOT NULL
+  code VARCHAR PRIMARY KEY NOT NULL,
+  name VARCHAR NOT NULL
 );
 
-
 -- Add default language
-INSERT INTO language (name, code) VALUES ('English', 'en');
+INSERT INTO
+  language (name, code)
+VALUES
+  ('English', 'en');
 
 -- Create meta table
 CREATE TABLE IF NOT EXISTS meta (
   id SERIAL PRIMARY KEY,
-  language_id INT REFERENCES language(id) NOT NULL,
+  language_code VARCHAR REFERENCES language(code) NOT NULL,
   title VARCHAR NOT NULL,
   meta_title VARCHAR NOT NULL,
   description VARCHAR,
-  keywords VARCHAR[]
+  keywords VARCHAR []
 );
 
 -- Create page table
 CREATE TABLE IF NOT EXISTS page (
   id SERIAL PRIMARY KEY,
   parent_id INT REFERENCES page(id),
-  meta_id INT REFERENCES meta(id),
+  meta_ids hstore,
   status page_status NOT NULL,
   slug VARCHAR NOT NULL,
   admin_name VARCHAR,
@@ -55,7 +59,7 @@ CREATE TABLE IF NOT EXISTS page (
 CREATE TABLE IF NOT EXISTS widget (
   id SERIAL PRIMARY KEY,
   widget_template_id INT NOT NULL,
-  widget_data_id INT,
+  widget_data_ids hstore,
   status widget_status NOT NULL,
   admin_name VARCHAR,
   admin_description VARCHAR,
@@ -66,7 +70,7 @@ CREATE TABLE IF NOT EXISTS widget (
 -- Create widget_data table
 CREATE TABLE IF NOT EXISTS widget_data (
   id SERIAL PRIMARY KEY,
-  language_id INT REFERENCES language(id) NOT NULL,
+  language_code VARCHAR REFERENCES language(code) NOT NULL,
   data JSONB
 );
 
@@ -76,9 +80,3 @@ CREATE TABLE IF NOT EXISTS page_widgets (
   widget_id INT REFERENCES widget(id) NOT NULL,
   position INT NOT NULL
 );
-
--- Add foreign key constraint to widget table
-ALTER TABLE widget
-ADD CONSTRAINT fk_widget_widget_data
-FOREIGN KEY (widget_data_id)
-REFERENCES widget_data(id);

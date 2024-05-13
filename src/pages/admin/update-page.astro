@@ -7,9 +7,10 @@ import {
   getExistingPages,
   readPageById,
   updatePage,
-  updateForm,
 } from "@/core/controllers/pageController";
+import { updateForm } from "@/core/models/pageModel";
 import { generateFullPaths } from "@/core/utils/pageUtils";
+import Base from "@/layouts/base.astro";
 
 const params = Astro.url.searchParams;
 const pageId = params.get("pageId");
@@ -31,11 +32,10 @@ const res = await Astro.locals.form.getData(updateForm);
 if (Astro.request.method === "POST") {
   if (res) {
     const data = res.data;
-    console.log(data);
 
     const result = await updatePage({ id: +pageId, fields: data });
     if (result) {
-      return new Response("Page updated successfully", { status: 200 });
+      return Astro.redirect("/admin/read-page?pageId=" + pageId);
     }
     return new Response("Failed to update page", { status: 500 });
   }
@@ -47,54 +47,56 @@ const existingPagePaths = generateFullPaths(existingPages).filter(
 );
 ---
 
-<Form title="Update Form" method="POST">
-  <Input
-    label="Slug"
-    id="slug"
-    value={pageData[0].slug}
-    error={res?.fieldErrors?.slug}
-    {...updateForm.inputProps.slug}
-  />
-  <Select
-    label="Status"
-    id="status"
-    {...updateForm.inputProps.status}
-    error={res?.fieldErrors?.status}
-  >
-    <option value="draft" selected={pageData[0].status === "draft"}
-      >Draft</option
+<Base>
+  <Form title="Update Form" method="POST">
+    <Input
+      label="Slug"
+      id="slug"
+      value={pageData[0].slug}
+      error={res?.fieldErrors?.slug}
+      {...updateForm.inputProps.slug}
+    />
+    <Select
+      label="Status"
+      id="status"
+      {...updateForm.inputProps.status}
+      error={res?.fieldErrors?.status}
     >
-    <option value="published" selected={pageData[0].status === "published"}
-      >Published</option
+      <option value="draft" selected={pageData[0].status === "draft"}
+        >Draft</option
+      >
+      <option value="published" selected={pageData[0].status === "published"}
+        >Published</option
+      >
+      <option value="archived" selected={pageData[0].status === "archived"}
+        >Archived</option
+      >
+      <option value="review" selected={pageData[0].status === "review"}
+        >Review</option
+      >
+    </Select>
+    <Select
+      label="Parent page"
+      id="parent_id"
+      error={res?.fieldErrors?.parent_id}
+      {...updateForm.inputProps.parent_id}
     >
-    <option value="archived" selected={pageData[0].status === "archived"}
-      >Archived</option
-    >
-    <option value="review" selected={pageData[0].status === "review"}
-      >Review</option
-    >
-  </Select>
-  <Select
-    label="Parent page"
-    id="parent_id"
-    error={res?.fieldErrors?.parent_id}
-    {...updateForm.inputProps.parent_id}
-  >
-    <option value="-1" selected>None</option>
-    {
-      existingPagePaths.map((p) => (
-        <option value={p.id} selected={pageData[0].parent_id === p.id}>
-          {p.path}
-        </option>
-      ))
-    }
-  </Select>
-  <Input
-    label="Admin Name"
-    id="admin_name"
-    error={res?.fieldErrors?.admin_name}
-    value={pageData[0].admin_name ?? ""}
-    {...updateForm.inputProps.admin_name}
-  />
-  <Button type="submit">Update</Button>
-</Form>
+      <option value="-1" selected>None</option>
+      {
+        existingPagePaths.map((p) => (
+          <option value={p.id} selected={pageData[0].parent_id === p.id}>
+            {p.path}
+          </option>
+        ))
+      }
+    </Select>
+    <Input
+      label="Admin Name"
+      id="admin_name"
+      error={res?.fieldErrors?.admin_name}
+      value={pageData[0].admin_name ?? ""}
+      {...updateForm.inputProps.admin_name}
+    />
+    <Button type="submit">Update</Button>
+  </Form>
+</Base>

@@ -1,7 +1,7 @@
-import { z } from "zod";
 import sql from "../utils/dbConnection";
 import { transformSlug } from "../utils/pageUtils";
-import { createForm } from "simple:form";
+import type { UpdateFormFields } from "../models/pageModel";
+import { Languages } from "../utils/enums";
 
 // TODO: Replace generic Errors with custom errors
 
@@ -26,9 +26,11 @@ export async function getExistingPages() {
 export async function hasDuplicateSlug({
   slug,
   parentId,
+  currentId,
 }: {
   slug: string | null;
   parentId: number | null;
+  currentId: number | null;
 }) {
   let hasDuplicate = false;
   if (slug === null) {
@@ -40,10 +42,10 @@ export async function hasDuplicateSlug({
     let existingPages;
     if (parentId !== null) {
       existingPages =
-        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id = ${parentId}`;
+        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id = ${parentId} AND id != ${currentId}`;
     } else {
       existingPages =
-        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id IS NULL`;
+        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id IS NULL AND id != ${currentId}`;
     }
     if (existingPages.length > 0) {
       hasDuplicate = true;
@@ -89,8 +91,24 @@ export async function createPage({
       throw new Error("Page with the same slug already exists");
     }
 
-    // Insert the page finally
-    await sql`INSERT INTO page (slug, parent_id, status, created_at, updated_at) VALUES (${slug}, ${parentId}, 'draft', to_timestamp(${Date.now()} / 1000.0), to_timestamp(${Date.now()} / 1000.0))`;
+    // Insert the page finally along with the meta data for the default language
+    const res: { id: number }[] = await sql`WITH lang AS (
+        SELECT id 
+        FROM language 
+        WHERE code = ${Languages.Default}
+      )
+      INSERT INTO meta (language_id, title, meta_title, description, keywords) 
+      VALUES (
+        (SELECT id FROM lang),
+        'Default Title',
+        'Default Meta Title',
+        'Default Description',
+        NULL
+      )
+      RETURNING id;`;
+
+    await sql`INSERT INTO page (slug, parent_id, meta_ids, status, created_at, updated_at) 
+      VALUES (${slug}, ${parentId}, hstore(${Languages.Default}, ${res[0].id}), 'draft', NOW(), NOW())`;
     status = true;
   } catch (e) {
     console.error(e);
@@ -166,23 +184,12 @@ export async function deletePage(id: number) {
   return status;
 }
 
-export const updateForm = createForm({
-  slug: z
-    .string()
-    .min(1)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-  status: z.enum(["draft", "published", "archived", "review"]),
-  parent_id: z.number(),
-  admin_name: z.string().min(1).optional(),
-});
-const updateFieldsObject = z.object(updateForm["validator"]);
-
 export async function updatePage({
   id,
   fields,
 }: {
   id: number;
-  fields: z.infer<typeof updateFieldsObject> | undefined;
+  fields: UpdateFormFields;
 }) {
   let result = false;
 
@@ -197,7 +204,13 @@ export async function updatePage({
       throw new Error("Slug cannot be empty");
     }
 
-    if (await hasDuplicateSlug({ slug, parentId: parent_id ?? null })) {
+    if (
+      await hasDuplicateSlug({
+        slug,
+        parentId: parent_id ?? null,
+        currentId: id,
+      })
+    ) {
       throw new Error("Page with the same slug already exists");
     }
 

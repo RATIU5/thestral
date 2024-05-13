@@ -1,0 +1,53 @@
+---
+import Select from "@/components/select.astro";
+import { readLanguages } from "@/core/controllers/languageController";
+import { Languages } from "@/core/utils/enums";
+
+const languages = await readLanguages();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <header>
+      <div class="max-w-40">
+        <Select label="Language" error={[]} id="lang">
+          {
+            languages.map((l) => (
+              <option value={l.code} selected={l.code === Languages.Default}>
+                {l.name}
+              </option>
+            ))
+          }
+        </Select>
+        <script>
+          import { Languages } from "@/core/utils/enums";
+          import {
+            getLanguageFromLocalStorage,
+            setLanguageInLocalStorage,
+          } from "@/core/utils/helpers";
+
+          if (!getLanguageFromLocalStorage()) {
+            setLanguageInLocalStorage(Languages.Default);
+          }
+
+          document
+            .getElementById("lang")
+            ?.addEventListener("change", handleLanguageChange);
+
+          function handleLanguageChange(event: Event) {
+            const lang = (event.target as HTMLSelectElement).value;
+            setLanguageInLocalStorage(lang);
+          }
+        </script>
+      </div>
+    </header>
+    <slot />
+  </body>
+</html>

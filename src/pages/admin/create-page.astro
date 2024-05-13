@@ -8,11 +8,13 @@ import {
   getExistingPages,
 } from "@/core/controllers/pageController";
 import { generateFullPaths } from "@/core/utils/pageUtils";
+import Base from "@/layouts/base.astro";
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const entries = Object.fromEntries(formData.entries()) as {
     slug: string;
+    lang: string;
     parentId: string;
   };
 
@@ -22,6 +24,7 @@ if (Astro.request.method === "POST") {
 
   const page = {
     slug: entries.slug,
+    lang: entries.lang,
     parentId: +entries.parentId || null,
   };
 
@@ -38,17 +41,29 @@ const existingPages = await getExistingPages();
 const existingPagePaths = generateFullPaths(existingPages);
 ---
 
-<Form title="Create Page" method="POST">
-  <Input
-    type="text"
-    id="slug"
-    name="slug"
-    placeholder="about us"
-    label="Slug"
-  />
-  <Select label="Parent page" name="parentId">
-    <option value="" selected>None</option>
-    {existingPagePaths.map((p) => <option value={p.id}>{p.path}</option>)}
-  </Select>
-  <Button type="submit">Submit</Button>
-</Form>
+<Base>
+  <Form title="Create Page" method="POST" id="createPageForm">
+    <Input
+      type="text"
+      id="slug"
+      name="slug"
+      placeholder="about us"
+      label="Slug"
+    />
+    <Select label="Parent page" name="parentId">
+      <option value="" selected>None</option>
+      {existingPagePaths.map((p) => <option value={p.id}>{p.path}</option>)}
+    </Select>
+    <Button type="submit">Submit</Button>
+  </Form>
+  <script>
+    import { getLanguageFromLocalStorage } from "@/core/utils/helpers";
+
+    const form = document.getElementById("createPageForm");
+    const langInput = document.createElement("input");
+    langInput.type = "hidden";
+    langInput.name = "lang";
+    langInput.value = getLanguageFromLocalStorage();
+    form?.appendChild(langInput);
+  </script>
+</Base>
