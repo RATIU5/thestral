@@ -100,9 +100,9 @@ export async function createPage({
       INSERT INTO meta (language_id, title, meta_title, description, keywords) 
       VALUES (
         (SELECT id FROM lang),
-        'Default Title',
-        'Default Meta Title',
-        'Default Description',
+        '',
+        '',
+        NULL,
         NULL
       )
       RETURNING id;`;
