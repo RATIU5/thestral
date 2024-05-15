@@ -48,3 +48,17 @@ export async function readLanguageByCode({ code }: { code: string }) {
     return null;
   }
 }
+
+export async function readUsersPreferredLanguage({ email }: { email: string }) {
+  try {
+    const res =
+      await sql`SELECT language_code FROM users WHERE email = ${email}`;
+    if (res.length === 0) {
+      throw new Error("User not found");
+    }
+    return res[0].language_code as string;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}

@@ -10,16 +10,6 @@ CREATE TYPE widget_status AS ENUM ('active', 'archived');
 -- Create enum type for user roles
 CREATE TYPE user_role AS ENUM ('admin', 'editor', 'viewer');
 
--- Create users table
-CREATE TABLE IF NOT EXISTS users (
-  id SERIAL PRIMARY KEY,
-  provider_id VARCHAR,
-  email VARCHAR,
-  role VARCHAR,
-  created_at TIMESTAMP,
-  last_accessed TIMESTAMP
-);
-
 -- Create language table
 CREATE TABLE IF NOT EXISTS language (
   code VARCHAR PRIMARY KEY NOT NULL,
@@ -31,6 +21,16 @@ INSERT INTO
   language (name, code)
 VALUES
   ('English', 'en');
+
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR UNIQUE NOT NULL,
+  role user_role NOT NULL,
+  language_code VARCHAR REFERENCES language(code) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  last_accessed TIMESTAMP NOT NULL
+);
 
 -- Create meta table
 CREATE TABLE IF NOT EXISTS meta (

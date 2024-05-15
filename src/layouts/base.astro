@@ -1,9 +1,18 @@
 ---
 import Select from "@/components/select.astro";
-import { readLanguages } from "@/core/controllers/languageController";
+import {
+  readLanguages,
+  readUsersPreferredLanguage,
+} from "@/core/controllers/languageController";
+import { getSession } from "auth-astro/server";
 import { Languages } from "@/core/utils/enums";
 
+const session = await getSession(Astro.request);
+
 const languages = await readLanguages();
+const selectLanguage = await readUsersPreferredLanguage({
+  email: session?.user?.email ?? "",
+});
 ---
 
 <html lang="en">
@@ -16,37 +25,52 @@ const languages = await readLanguages();
   </head>
   <body>
     <header>
-      <div class="max-w-40">
-        <Select label="Language" error={[]} id="lang">
-          {
-            languages.map((l) => (
-              <option value={l.code} selected={l.code === Languages.Default}>
-                {l.name}
-              </option>
-            ))
-          }
-        </Select>
-        <script>
-          import { Languages } from "@/core/utils/enums";
-          import {
-            getLanguageFromLocalStorage,
-            setLanguageInLocalStorage,
-          } from "@/core/utils/helpers";
-
-          if (!getLanguageFromLocalStorage()) {
-            setLanguageInLocalStorage(Languages.Default);
-          }
-
-          document
-            .getElementById("lang")
-            ?.addEventListener("change", handleLanguageChange);
-
-          function handleLanguageChange(event: Event) {
-            const lang = (event.target as HTMLSelectElement).value;
-            setLanguageInLocalStorage(lang);
-          }
-        </script>
+      <div class="inline-flex w-full flex-row justify-between">
+        <div>
+          <Select label="Language" error={[]} id="lang">
+            {
+              languages.map((l) => (
+                <option
+                  value={l.code}
+                  selected={l.code === selectLanguage ?? Languages.Default}
+                >
+                  {l.name}
+                </option>
+              ))
+            }
+          </Select>
+        </div>
+        <div>
+          <button
+            id="logout"
+            class="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
+      <script>
+        const { signOut } = await import("auth-astro/client");
+
+        document
+          .getElementById("lang")
+          ?.addEventListener("change", handleLanguageChange);
+
+        async function handleLanguageChange(event: Event) {
+          const lang = (event.target as HTMLSelectElement).value;
+          await fetch("/api/language", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ language: lang }),
+          });
+        }
+
+        document
+          .querySelector("#logout")
+          ?.addEventListener("click", () => signOut());
+      </script>
     </header>
     <slot />
   </body>

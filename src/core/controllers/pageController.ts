@@ -1,6 +1,6 @@
 import sql from "../utils/dbConnection";
 import { transformSlug } from "../utils/pageUtils";
-import type { UpdateFormFields } from "../models/pageModel";
+import type { CreateFormFields, UpdateFormFields } from "../models/pageModel";
 import { Languages } from "../utils/enums";
 
 // TODO: Replace generic Errors with custom errors
@@ -66,10 +66,7 @@ export async function hasDuplicateSlug({
 export async function createPage({
   slug,
   parentId,
-}: {
-  slug: string;
-  parentId: number | null;
-}): Promise<boolean> {
+}: CreateFormFields): Promise<boolean> {
   let status = false;
   try {
     if (slug.trim() === "") {
@@ -220,8 +217,6 @@ export async function updatePage({
       status,
       admin_name: admin_name ?? null,
     };
-
-    console.log(updateFields);
 
     await sql`UPDATE page SET ${sql(updateFields)} WHERE id = ${id}`;
     result = true;

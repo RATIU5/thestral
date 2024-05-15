@@ -1,0 +1,40 @@
+---
+import Button from "@/components/button.astro";
+import Form from "@/components/form.astro";
+import Input from "@/components/input.astro";
+import Select from "@/components/select.astro";
+import Base from "@/layouts/base.astro";
+import {
+  createUserForm,
+  createUserFormObject,
+  type CreateUserFormFields,
+} from "@/core/models/userModel";
+import { createUser } from "@/core/controllers/userController";
+
+if (Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  const formData = Object.fromEntries(form.entries()) as CreateUserFormFields;
+
+  const result = await createUser(formData);
+
+  if (result) {
+    return Astro.redirect("/admin");
+  }
+}
+---
+
+<Base>
+  <Form title="Create User" method="POST">
+    <Input label="Email" id="email" {...createUserForm.inputProps.email} />
+    <Select label="User Role" id="role" name="role">
+      {
+        createUserFormObject.role.options.map((r) => (
+          <option value={r} selected={r === "viewer"}>
+            {r}
+          </option>
+        ))
+      }
+    </Select>
+    <Button type="submit">Submit</Button>
+  </Form>
+</Base>

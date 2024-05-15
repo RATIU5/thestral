@@ -1,7 +1,7 @@
-import { createForm } from "simple:form";
 import { z } from "zod";
+import { createForm as sf_createForm } from "simple:form";
 
-export const updateForm = createForm({
+export const updateForm = sf_createForm({
   slug: z
     .string()
     .min(1)
@@ -12,3 +12,13 @@ export const updateForm = createForm({
 });
 const updateFieldsObject = z.object(updateForm["validator"]);
 export type UpdateFormFields = z.infer<typeof updateFieldsObject> | undefined;
+
+export const createForm = sf_createForm({
+  slug: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  parent_id: z.number(),
+});
+const createFieldsObject = z.object(createForm["validator"]);
+export type CreateFormFields = z.infer<typeof createFieldsObject> | undefined;
