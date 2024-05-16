@@ -7,25 +7,31 @@ import {
   createPage,
   getExistingPages,
 } from "@/core/controllers/pageController";
+import { readLanguageFromUser } from "@/core/controllers/userController";
 import { generateFullPaths } from "@/core/utils/pageUtils";
 import Base from "@/layouts/base.astro";
+import { getSession } from "auth-astro/server";
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const entries = Object.fromEntries(formData.entries()) as {
     slug: string;
     lang: string;
-    parentId: string;
+    parentId: string | null;
   };
 
   if (entries.slug.trim() === "") {
     return new Response("Slug is required", { status: 400 });
   }
 
+  const session = await getSession(Astro.request);
+  const email = session?.user?.email ?? "";
+  const userLang = await readLanguageFromUser(email);
+
   const page = {
     slug: entries.slug,
-    lang: entries.lang,
-    parentId: +entries.parentId || null,
+    parent_id: entries.parentId ? +entries.parentId : null,
+    language: userLang.language_code,
   };
 
   const res = await createPage(page);

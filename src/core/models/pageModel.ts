@@ -18,7 +18,8 @@ export const createForm = sf_createForm({
     .string()
     .min(1)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-  parent_id: z.number(),
+  parent_id: z.number().nullable(),
+  language: z.string().min(2).max(2),
 });
 const createFieldsObject = z.object(createForm["validator"]);
 export type CreateFormFields = z.infer<typeof createFieldsObject> | undefined;

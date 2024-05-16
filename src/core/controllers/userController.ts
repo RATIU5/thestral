@@ -40,3 +40,33 @@ export async function readUserWithEmail(email: string) {
     throw e;
   }
 }
+
+export async function updateUserLastAccessed(email: string) {
+  try {
+    if (!email) {
+      throw new Error("Email is required");
+    }
+    await sql`UPDATE users SET last_accessed = NOW() WHERE email = ${email.toLowerCase()}`;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function readLanguageFromUser(email: string) {
+  try {
+    if (!email) {
+      throw new Error("Email is required");
+    }
+    const users = await sql`SELECT language_code, name FROM users AS u
+      INNER JOIN language AS l ON l.code = u.language_code 
+      WHERE u.email = ${email.toLowerCase()}`;
+    if (users.length === 0) {
+      throw new Error("User not found");
+    }
+    return users[0] as { language_code: string; name: string };
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

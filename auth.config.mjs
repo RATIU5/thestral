@@ -1,4 +1,4 @@
-import { readUserWithEmail } from "@/core/controllers/userController";
+import { readUserWithEmail, updateUserLastAccessed } from "@/core/controllers/userController";
 import Entra from "@auth/core/providers/microsoft-entra-id";
 import { defineConfig } from "auth-astro";
 
@@ -14,6 +14,9 @@ export default defineConfig({
     signIn: async ({ profile }) => {
       try {
         const doesEmailExist = await readUserWithEmail(profile.email);
+        if (doesEmailExist) {
+          await updateUserLastAccessed(profile.email);
+        }
         return doesEmailExist ? true : false;
       } catch (e) {
         return false;

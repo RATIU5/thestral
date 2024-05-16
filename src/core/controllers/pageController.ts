@@ -63,23 +63,24 @@ export async function hasDuplicateSlug({
  * @returns whether the page was created successfully or not
  * @throws an error if the slug is empty, contains invalid characters, or already exists
  */
-export async function createPage({
-  slug,
-  parentId,
-}: CreateFormFields): Promise<boolean> {
+export async function createPage(fields: CreateFormFields): Promise<boolean> {
   let status = false;
   try {
-    if (slug.trim() === "") {
+    if (!fields) {
+      return status;
+    }
+
+    if (fields?.slug.trim() === "") {
       throw new Error("Slug cannot be empty");
     }
 
-    slug = transformSlug(slug);
+    const slug = transformSlug(fields.slug);
 
     // Cannot have duplicate slugs for the same parent
     let existingPages;
-    if (parentId !== null) {
+    if (fields.parent_id !== null) {
       existingPages =
-        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id = ${parentId}`;
+        await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id = ${fields.parent_id}`;
     } else {
       existingPages =
         await sql`SELECT id FROM page WHERE slug = ${slug} AND parent_id IS NULL`;
@@ -89,14 +90,10 @@ export async function createPage({
     }
 
     // Insert the page finally along with the meta data for the default language
-    const res: { id: number }[] = await sql`WITH lang AS (
-        SELECT id 
-        FROM language 
-        WHERE code = ${Languages.Default}
-      )
-      INSERT INTO meta (language_id, title, meta_title, description, keywords) 
+    const res: { id: number }[] =
+      await sql`INSERT INTO meta (language_code, title, meta_title, description, keywords) 
       VALUES (
-        (SELECT id FROM lang),
+        ${fields.language},
         '',
         '',
         NULL,
@@ -105,7 +102,7 @@ export async function createPage({
       RETURNING id;`;
 
     await sql`INSERT INTO page (slug, parent_id, meta_ids, status, created_at, updated_at) 
-      VALUES (${slug}, ${parentId}, hstore(${Languages.Default}, ${res[0].id}), 'draft', NOW(), NOW())`;
+      VALUES (${slug}, ${fields.parent_id}, hstore(${fields.language}, ${res[0].id}), 'draft', NOW(), NOW())`;
     status = true;
   } catch (e) {
     console.error(e);
