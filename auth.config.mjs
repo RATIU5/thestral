@@ -17,7 +17,7 @@ export default defineConfig({
         if (doesEmailExist) {
           await updateUserLastAccessed(profile.email);
         }
-        return doesEmailExist ? true : false;
+        return !!doesEmailExist;
       } catch (e) {
         return false;
       }

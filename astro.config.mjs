@@ -9,7 +9,8 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
   output: "server",
   experimental: {
-    actions: true,
+    actions: true
   },
-  integrations: [tailwind(), simpleStackForm()],
+  integrations: [tailwind(), simpleStackForm(), auth()],
+  adapter: vercel()
 });
