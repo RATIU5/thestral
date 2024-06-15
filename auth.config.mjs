@@ -1,4 +1,7 @@
-import { readUserWithEmail, updateUserLastAccessed } from "@/core/controllers/userController";
+import {
+  readUserWithEmail,
+  updateUserLastAccessed,
+} from "@/core/controllers/userController";
 import Entra from "@auth/core/providers/microsoft-entra-id";
 import { defineConfig } from "auth-astro";
 
@@ -22,5 +25,5 @@ export default defineConfig({
         return false;
       }
     },
-  }
+  },
 });
