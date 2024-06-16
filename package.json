@@ -8,6 +8,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "migrate": "node ./scripts/migrate.js",
+    "migrate:drop": "node ./scripts/migrate-drop.js",
     "astro": "astro"
   },
   "dependencies": {
