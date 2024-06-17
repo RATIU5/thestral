@@ -1,6 +1,4 @@
+/// <reference path="../.astro/actions.d.ts" />
 /// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
-/// <reference types="astro-dynamic-import/client" />
-
-
-declare var __VERBOSE__: boolean;
+/// <reference types="simple-stack-form/types" />

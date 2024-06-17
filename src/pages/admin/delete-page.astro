@@ -1,0 +1,43 @@
+---
+import Button from "@/components/button.astro";
+import Form from "@/components/form.astro";
+import Select from "@/components/select.astro";
+import {
+  deletePage,
+  getExistingPages,
+} from "@/core/controllers/pageController";
+import { generateFullPaths } from "@/core/utils/pageUtils";
+import Base from "@/layouts/base.astro";
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const entries = Object.fromEntries(formData.entries()) as {
+    pageId: string;
+  };
+
+  if (entries.pageId.trim() === "") {
+    return new Response("Slug is required", { status: 400 });
+  }
+
+  const res = await deletePage(+entries.pageId);
+
+  if (res) {
+    return new Response("Page deleted", { status: 201 });
+  } else {
+    return new Response("Failed to delete page", { status: 500 });
+  }
+}
+
+const existingPages = await getExistingPages();
+const existingPagePaths = generateFullPaths(existingPages);
+---
+
+<Base>
+  <Form title="Delete Page" method="POST">
+    <Select label="Page" name="pageId">
+      <option value="" selected>None</option>
+      {existingPagePaths.map((p) => <option value={p.id}>{p.path}</option>)}
+    </Select>
+    <Button type="submit">Submit</Button>
+  </Form>
+</Base>

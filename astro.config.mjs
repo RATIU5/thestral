@@ -1,16 +1,16 @@
 import { defineConfig } from "astro/config";
-import dynamicImport from './lib/dynamic-import';
+import tailwind from "@astrojs/tailwind";
+import simpleStackForm from "simple-stack-form";
+import auth from "auth-astro";
+
+import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  integrations: [dynamicImport()],
-  vite: {
-    define: {
-      __VERBOSE__: process.argv.includes("--verbose"),
-    },
-    optimizeDeps: {
-      exclude: ["astro-dynamic-import:internal"],
-    },
+  experimental: {
+    actions: true,
   },
+  integrations: [tailwind(), simpleStackForm(), auth()],
+  adapter: vercel(),
 });

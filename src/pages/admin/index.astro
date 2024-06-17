@@ -1,0 +1,51 @@
+---
+import Base from "@/layouts/base.astro";
+import { readdir } from "fs/promises";
+import path from "path";
+
+const pages = await readdir(path.join(process.cwd(), "src", "pages"), {
+  recursive: true,
+});
+const pagePaths: string[] = pages
+  .filter((page: string) => page.endsWith(".astro") || page.endsWith(".mdx"))
+  .map((page: string) =>
+    page
+      .replace(/\.mdx$/, "")
+      .replace(/\.astro$/, "")
+      .replace(/index$/, "")
+      .replace("", "/")
+      .replace(/\/$/, "")
+      .replace(/^\/(?!$)/, "")
+  )
+  .filter((path: string) => path !== "");
+
+function formatName(path: string): string {
+  return path
+    .split("/")
+    .pop()!
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char: string) => char.toUpperCase());
+}
+
+const pagePathsObject: { [key: string]: string } = pagePaths.reduce(
+  (acc: { [key: string]: string }, path: string) => {
+    acc[path] = formatName(path);
+    return acc;
+  },
+  {}
+);
+---
+
+<Base>
+  <ul>
+    {
+      Object.entries(pagePathsObject).map(([key, value]) => {
+        return (
+          <li>
+            <a href={`/${key}`}>{value}</a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Base>

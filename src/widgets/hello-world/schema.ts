@@ -1,4 +1,4 @@
-import type { Schema } from "@/types/widgets/schema";
+import type { Schema } from "@/core/types/widgets/schema";
 
 export default {
   id: "507c7f79bcf86cd7994f6c0e",

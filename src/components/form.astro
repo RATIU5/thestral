@@ -1,0 +1,16 @@
+---
+import type { JSX } from "astro/jsx-runtime";
+
+type Props = JSX.IntrinsicElements["form"] & {
+  title: string;
+};
+const { title, ...props } = Astro.props;
+---
+
+<form
+  {...props}
+  class="bg-slate-100 rounded-md p-4 flex flex-col gap-2 max-w-80 m-4"
+>
+  <h1 class="font-bold text-3xl mb-4">{title}</h1>
+  <slot />
+</form>

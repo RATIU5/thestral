@@ -1,15 +1,20 @@
 ---
-import type { SchemaProps } from "@/types/widgets/schema";
+import type { SchemaProps } from "@/core/types/widgets/schema";
 import type schema from "./schema";
 
 type Props = SchemaProps<typeof schema>;
 
 const props = Astro.props;
-console.log(props.cart);
 ---
 
 <div style={{ width: "100%", maxWidth: "300px" }}>
-  <p style={{ fontSize: props.fontSize + "px", color: props.color, textAlign: props.alignment }}>
+  <p
+    style={{
+      fontSize: props.fontSize + "px",
+      color: props.color,
+      textAlign: props.alignment,
+    }}
+  >
     {props.bold ? <strong>{props.greeting}</strong> : props.greeting}
   </p>
   <h1>Date</h1>

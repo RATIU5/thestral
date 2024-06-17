@@ -1,0 +1,75 @@
+---
+import Button from "@/components/button.astro";
+import Form from "@/components/form.astro";
+import Input from "@/components/input.astro";
+import Select from "@/components/select.astro";
+import {
+  createPage,
+  getExistingPages,
+} from "@/core/controllers/pageController";
+import { readLanguageFromUser } from "@/core/controllers/userController";
+import { generateFullPaths } from "@/core/utils/pageUtils";
+import Base from "@/layouts/base.astro";
+import { getSession } from "auth-astro/server";
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  const entries = Object.fromEntries(formData.entries()) as {
+    slug: string;
+    lang: string;
+    parentId: string | null;
+  };
+
+  if (entries.slug.trim() === "") {
+    return new Response("Slug is required", { status: 400 });
+  }
+
+  const session = await getSession(Astro.request);
+  const email = session?.user?.email ?? "";
+  const userLang = await readLanguageFromUser(email);
+
+  const page = {
+    slug: entries.slug,
+    parent_id: entries.parentId ? +entries.parentId : null,
+    language: userLang.language_code,
+  };
+
+  const res = await createPage(page);
+
+  if (res) {
+    return new Response("Page created", { status: 201 });
+  } else {
+    return new Response("Failed to create page", { status: 500 });
+  }
+}
+
+const existingPages = await getExistingPages();
+const existingPagePaths = generateFullPaths(existingPages);
+---
+
+<Base>
+  <Form title="Create Page" method="POST" id="createPageForm">
+    <Input
+      type="text"
+      id="slug"
+      name="slug"
+      placeholder="about us"
+      label="Slug"
+    />
+    <Select label="Parent page" name="parentId">
+      <option value="" selected>None</option>
+      {existingPagePaths.map((p) => <option value={p.id}>{p.path}</option>)}
+    </Select>
+    <Button type="submit">Submit</Button>
+  </Form>
+  <script>
+    import { getLanguageFromLocalStorage } from "@/core/utils/helpers";
+
+    const form = document.getElementById("createPageForm");
+    const langInput = document.createElement("input");
+    langInput.type = "hidden";
+    langInput.name = "lang";
+    langInput.value = getLanguageFromLocalStorage();
+    form?.appendChild(langInput);
+  </script>
+</Base>

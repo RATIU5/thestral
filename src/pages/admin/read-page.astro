@@ -1,0 +1,48 @@
+---
+import {
+  readPageById,
+  readPages,
+  type FieldsArray,
+} from "@/core/controllers/pageController";
+import Base from "@/layouts/base.astro";
+
+const params = Astro.url.searchParams;
+const fields = (params.get("fields")?.split(",") ?? [
+  "id",
+  "slug",
+  "parent_id",
+]) as FieldsArray;
+
+let pages = null;
+const pageId = params.get("pageId") as string | undefined;
+if (pageId) {
+  pages = await readPageById({ id: +pageId, fields });
+} else {
+  pages = await readPages({
+    fields,
+  });
+}
+
+console.log(typeof pages[0].created_at);
+---
+
+<Base>
+  <table>
+    <thead>
+      <tr>
+        {fields.map((f) => <th>{f}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        pages.map((page) => (
+          <tr>
+            {fields.map((f) => (
+              <td>{page[f] ?? "null"}</td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</Base>
